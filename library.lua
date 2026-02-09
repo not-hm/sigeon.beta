@@ -17,6 +17,41 @@ local RunService = cloneref(game:GetService("RunService"))
 local Players = cloneref(game:GetService("Players"))
 local LocalPlayer = Players.LocalPlayer
 local Configuration = {}
+Configuration.SetupModule = function(tname, ena, keyb)
+	if not ConfigTable.Modules[tname] then
+		ConfigTable.Modules[tname] = {
+			Enabled = ena,
+			Keybind = keyb,
+
+			Sliders = {},
+			Dropdowns = {},
+			MiniToggles = {}
+		}
+	else
+		ena = ConfigTable.Modules[tname].Enabled
+		keyb = ConfigTable.Modules[tname].Keybind
+	end
+	
+	return ena, keyb
+end
+Configuration.Register = {
+	ToggleButton = function(tname, ena, keyb)
+		return Configuration.SetupModule(tname, ena, keyb)
+	end,
+	Slider = function(tname, sname, val)
+		Configuration.SetupModule(tname)
+		ConfigTable.Modules[tname].Sliders[sname] = val
+	end,
+	Dropdown = function(tname, dname, val)
+		Configuration.SetupModule(tname)
+		ConfigTable.Modules[tname].Dropdowns[dname] = val
+	end,
+	MiniToggle = function(tname, mname, val)
+		Configuration.SetupModule(tname)
+		ConfigTable.Modules[tname].MiniToggles[mname] = val
+	end,
+}
+
 local gethui = gethui or function()
 	return (RunService:IsStudio() and LocalPlayer.PlayerGui) or cloneref(game:GetService("CoreGui"))
 end
@@ -39,46 +74,6 @@ task.spawn(function()
 	while task.wait(5) do
 		writefile(CurrentGame, HttpService:JSONEncode(ConfigTable))
 	end
-	
-	--
-	
-	Configuration.SetupModule = function(tname, ena, keyb)
-		if not ConfigTable.Modules[tname] then
-			ConfigTable.Modules[tname] = {
-				Enabled = ena,
-				Keybind = keyb,
-
-				Sliders = {},
-				Dropdowns = {},
-				MiniToggles = {}
-			}
-		else
-			ena = ConfigTable.Modules[tname].Enabled
-			keyb = ConfigTable.Modules[tname].Keybind
-		end
-
-		return ena, keyb
-	end
-	Configuration.Register = {
-		ToggleButton = function(tname, ena, keyb)
-			return Configuration.SetupModule(tname, ena, keyb)
-		end,
-
-		Slider = function(tname, sname, val)
-			Configuration.SetupModule(tname)
-			ConfigTable.Modules[tname].Sliders[sname] = val
-		end,
-
-		Dropdown = function(tname, dname, val)
-			Configuration.SetupModule(tname)
-			ConfigTable.Modules[tname].Dropdowns[dname] = val
-		end,
-
-		MiniToggle = function(tname, mname, val)
-			Configuration.SetupModule(tname)
-			ConfigTable.Modules[tname].MiniToggles[mname] = val
-		end,
-	}
 end)
 
 local function TotalY(obj)
