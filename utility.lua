@@ -70,7 +70,7 @@ Utility.IsExposed = function(obj)
 end
 
 Utility.IsFirstPerson = function()
-	return LocalPlayer.CameraMode == Enum.CameraMode.LockFirstPerson or LocalPlayer.CameraMaxZoomDistance == 0 and LocalPlayer.CameraMinZoomDistance == 0
+	  return (LocalPlayer.Character.Head.CFrame.Position - workspace.CurrentCamera.CFrame.Position).Magnitude < 1
 end
 
 Utility.GetTeam = function(v)
