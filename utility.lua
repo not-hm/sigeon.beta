@@ -34,6 +34,27 @@ Utility.BindRemove = function(types, name)
 	Connections[types][name] = nil
 end
 
+Utility.BindUpdate = function(types, name, delays)
+	local Bind = Connections[types][name]
+	if not Bind then return end
+	if Bind.delay == delays then return end
+	Bind.conn:Disconnect()
+	Bind.delay = delays or 0
+	Bind.elapsed = 0
+	local Handler
+	if Bind.delay > 0 then
+		Handler = function(dt)
+			Bind.elapsed += dt
+			if Bind.elapsed < Bind.delay then return end
+			Bind.elapsed = 0
+			Bind.callback()
+		end
+	else
+		Handler = Bind.callback
+	end
+	Bind.conn = RunService[types]:Connect(Handler)
+end
+
 Utility.IsAlive = function(obj)
 	return obj.Character and obj.Character.PrimaryPart and obj.Character:FindFirstChildOfClass("Humanoid") and obj.Character:FindFirstChildOfClass("Humanoid").Health > 0
 end
@@ -46,6 +67,10 @@ Utility.IsExposed = function(obj)
 		return Result.Instance:IsDescendantOf(obj.Character)
 	end
 	return true
+end
+
+Utility.IsFirstPerson = function()
+	return LocalPlayer.CameraMode == Enum.CameraMode.LockFirstPerson or LocalPlayer.CameraMaxZoomDistance == 0 and LocalPlayer.CameraMinZoomDistance == 0
 end
 
 Utility.GetTeam = function(v)
@@ -108,12 +133,38 @@ Utility.GetNearestEntity = function(MaxDist, Mode, TeamCheck, WallCheck, Directi
 				end
 				if Selected and Selected < MinDist then
 					MinDist = Selected
-					Entity = v.Character
+					Entity = v
 				end
 			end
 		end
 	end
 	return Entity
+end
+
+Utility.GetPrediction = function(primarypart, origin, speed)
+	local rel = primarypart.Position - origin
+	local velo = primarypart.AssemblyLinearVelocity
+
+	local a = velo:Dot(velo) - speed * speed
+	local b = 2 * rel:Dot(velo)
+	local c = rel:Dot(rel)
+
+	local disc = b * b - 4 * a * c
+	if disc < 0 then return primarypart.Position end
+
+	local t1 = (-b + math.sqrt(disc)) / (2 * a)
+	local t2 = (-b - math.sqrt(disc)) / (2 * a)
+	local t
+	if t1 > 0 and t2 > 0 then
+		t = math.min(t1, t2)
+	elseif t1 > 0 then
+		t = t1
+	elseif t2 > 0 then
+		t = t2
+	else
+		return primarypart.Position
+	end
+	return primarypart.Position + velo * t	
 end
 
 Utility.HighlightAdd = function(obj)
