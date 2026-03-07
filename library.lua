@@ -318,7 +318,7 @@ function Library:Initialize()
 	ArrayContainer.BackgroundTransparency = 1.000
 	ArrayContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ArrayContainer.BorderSizePixel = 0
-	ArrayContainer.Position = UDim2.new(0, 15, 0, 15)
+	ArrayContainer.Position = UDim2.new(0, 15, 0, 24)
 	ArrayContainer.Size = UDim2.new(0.196470603, 0, 0.855223835, 0)
 
 	local UIListLayout_5 = Instance.new("UIListLayout")
