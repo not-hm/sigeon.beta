@@ -23,16 +23,18 @@ Configuration.SetupModule = function(tname, ena, keyb)
 		ConfigTable.Modules[tname] = {
 			Enabled = ena,
 			Keybind = keyb,
-
 			Sliders = {},
 			Dropdowns = {},
 			MiniToggles = {}
 		}
 	else
-		ena = ConfigTable.Modules[tname].Enabled
-		keyb = ConfigTable.Modules[tname].Keybind
+		local module = ConfigTable.Modules[tname]
+		ena = module.Enabled
+		keyb = module.Keybind
+		if not module.Sliders then module.Sliders = {} end
+		if not module.Dropdowns then module.Dropdowns = {} end
+		if not module.MiniToggles then module.MiniToggles = {} end
 	end
-	
 	return ena, keyb
 end
 Configuration.Register = {
