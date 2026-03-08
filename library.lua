@@ -825,8 +825,8 @@ function Library:Initialize()
 					Callback = Dropdown.Callback or function() end
 				}
 				Configuration.Register.Dropdown(ToggleButton.Name, Dropdown.Name, Dropdown.Default)
-				if ConfigTable.Modules[ToggleButton.Name].Dropdowns[Dropdown.Name] then
-					Dropdown.Default = ConfigTable.Modules[ToggleButton.Name].Dropdowns[Dropdown.Name]
+				if ConfigTable.Modules[ToggleButton.Name].Dropdowns[Dropdown.Name] ~= nil then
+    				Dropdown.Default = ConfigTable.Modules[ToggleButton.Name].Dropdowns[Dropdown.Name]
 				end
 				
 				local Frame_4 = Instance.new("Frame")
@@ -948,8 +948,8 @@ function Library:Initialize()
 					Callback = Slider.Callback or function() end
 				}
 				Configuration.Register.Slider(ToggleButton.Name, Slider.Name, Slider.Default)
-				if ConfigTable.Modules[ToggleButton.Name].Sliders[Slider.Name] then
-					Slider.Default = ConfigTable.Modules[ToggleButton.Name].Sliders[Slider.Name]
+				if ConfigTable.Modules[ToggleButton.Name].Sliders[Slider.Name] ~= nil then
+    				Slider.Default = ConfigTable.Modules[ToggleButton.Name].Sliders[Slider.Name]
 				end
 				
 				local Dragged, Value = false, nil
