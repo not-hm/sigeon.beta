@@ -318,7 +318,7 @@ task.defer(function()
 						local EntityPosition = Vector3.new(Entity.Character.PrimaryPart.Position.X, LocalPlayer.Character.PrimaryPart.Position.Y, Entity.Character.PrimaryPart.Position.Z)
 						local LookCFrame = CFrame.lookAt(LocalPlayer.Character.PrimaryPart.Position, EntityPosition)
 						if Utility.IsFirstPerson() then
-							if not Silent then return end
+							if Silent then return end
 							workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, Entity.Character.PrimaryPart.Position)
 							LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position) * LookCFrame.Rotation
 						else
