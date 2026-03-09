@@ -5,7 +5,6 @@ local Utility = loadstring(game:HttpGet("https://raw.githubusercontent.com/not-h
 local cloneref = cloneref or function(obj) return obj end
 local hookfunction = hookfunction or function(func, callback) end
 local newcclosure = newcclosure or function(func) return func end
-local Drawing = Drawing or {new = function() return {} end}
 
 local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 local UserInputService = cloneref(game:GetService("UserInputService"))
