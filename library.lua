@@ -43,15 +43,21 @@ Configuration.Register = {
 	end,
 	Slider = function(tname, sname, val)
 		Configuration.SetupModule(tname)
-		ConfigTable.Modules[tname].Sliders[sname] = val
+		if ConfigTable.Modules[tname].Sliders[sname] == nil then
+			ConfigTable.Modules[tname].Sliders[sname] = val
+		end
 	end,
 	Dropdown = function(tname, dname, val)
 		Configuration.SetupModule(tname)
-		ConfigTable.Modules[tname].Dropdowns[dname] = val
+		if ConfigTable.Modules[tname].Dropdowns[dname] == nil then
+			ConfigTable.Modules[tname].Dropdowns[dname] = val
+		end
 	end,
 	MiniToggle = function(tname, mname, val)
 		Configuration.SetupModule(tname)
-		ConfigTable.Modules[tname].MiniToggles[mname] = val
+		if ConfigTable.Modules[tname].MiniToggles[mname] == nil then
+			ConfigTable.Modules[tname].MiniToggles[mname] = val
+		end
 	end,
 }
 
