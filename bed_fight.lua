@@ -27,12 +27,14 @@ task.defer(function()
 			Block = require(ReplicatedStorage.ToolHandlers.Block),
 		},
 		Modules = {
+			ItemShopData = require(ReplicatedStorage.Modules.DataModules.ItemShopData),
 			SwordsData = require(ReplicatedStorage.Modules.DataModules.SwordsData),
 			ItemsData = require(ReplicatedStorage.Modules.DataModules.ItemsData),
 			VelocityUtils = require(ReplicatedStorage.Modules.VelocityUtils),
 		},
 		Remotes = {
 			PlaceBlock = ReplicatedStorage.Remotes.ItemsRemotes.PlaceBlock,
+			EquipTool = ReplicatedStorage.Remotes.ItemsRemotes.EquipTool,
 			MineBlock = ReplicatedStorage.Remotes.ItemsRemotes.MineBlock,
 			SwordHit = ReplicatedStorage.Remotes.ItemsRemotes.SwordHit,
 		},
@@ -128,6 +130,7 @@ task.defer(function()
 				end,
 				GetUI = function()
 					if LocalPlayer.PlayerGui:FindFirstChild("BackpackGui") and LocalPlayer.PlayerGui.BackpackGui:FindFirstChild("BackpackList") and LocalPlayer.PlayerGui.BackpackGui.BackpackList.Visible then return true end
+					if LocalPlayer.PlayerGui:FindFirstChild("TeamUpgradesGui") and LocalPlayer.PlayerGui.TeamUpgradesGui.Enabled then return true end
 					if LocalPlayer.PlayerGui:FindFirstChild("TeamChestGui") and LocalPlayer.PlayerGui.TeamChestGui.Enabled then return true end
 					if LocalPlayer.PlayerGui:FindFirstChild("ItemShopGui") and LocalPlayer.PlayerGui.ItemShopGui.Enabled then return true end
 					return false
@@ -153,11 +156,11 @@ end)
 
 local Core = Library:Initialize()
 local Sections = {
-	Combat = Core:CreateSection(1, UDim2.new(0, 0, 2, -250)),
-	--Movement = Core:CreateSection(2, UDim2.new(0, 0, 0, 0)),
+	Combat = Core:CreateSection(1, UDim2.new(0, 0, 2, -350)),
+	Movement = Core:CreateSection(2, UDim2.new(0, 0, 0, 0)),
 	Visual = Core:CreateSection(3, UDim2.new(0, 0, 0, 0)),
 	World = Core:CreateSection(4, UDim2.new(0, 0, 0, 0)),
-	--Misc = Core:CreateSection(5, UDim2.new(0, 0, 0, 0)),
+	Misc = Core:CreateSection(5, UDim2.new(0, 0, 0, 0)),
 }
 
 local AimAssist
@@ -177,7 +180,7 @@ task.defer(function()
 						local Entity = Utility.GetNearestEntity.Distance(Distances, "Angle", (LocalPlayer.Team ~= Teams.Spectators), true, 120)
 						if Entity then
 							if ToolCheck and not BedFight.Functions.Inventory.Character.Find("sword") then return end
-							local FinalPos = Entity.Character.PrimaryPart.Position + (Entity.Character.PrimaryPart.Velocity * Prediction)
+							local FinalPos = Entity.Character.PrimaryPart.Position + (Entity.Character.PrimaryPart.AssemblyLinearVelocity * Prediction)
 							workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame:Lerp(CFrame.new(workspace.CurrentCamera.CFrame.Position, FinalPos), Strength)
 						end
 					end
@@ -295,8 +298,8 @@ end)
 local SilentAura
 task.defer(function()
 	local StartRotate, StartSwing
-	local Direction
-	
+	local Direction, Silent
+
 	SilentAura = Sections.Combat:CreateToggle({
 		Name = "Silent Aura",
 		Callback = function(callback)
@@ -315,6 +318,7 @@ task.defer(function()
 						local EntityPosition = Vector3.new(Entity.Character.PrimaryPart.Position.X, LocalPlayer.Character.PrimaryPart.Position.Y, Entity.Character.PrimaryPart.Position.Z)
 						local LookCFrame = CFrame.lookAt(LocalPlayer.Character.PrimaryPart.Position, EntityPosition)
 						if Utility.IsFirstPerson() then
+							if not Silent then return end
 							workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, Entity.Character.PrimaryPart.Position)
 							LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position) * LookCFrame.Rotation
 						else
@@ -335,7 +339,7 @@ task.defer(function()
 		Name = "Direction",
 		Min = 0,
 		Max = 360,
-		Default = 120,
+		Default = 360,
 		Callback = function(callback)
 			Direction = callback
 		end,
@@ -352,10 +356,16 @@ task.defer(function()
 	SilentAura:CreateSlider({
 		Name = "Start Swing",
 		Min = 0,
-		Max = 18,
-		Default = 18,
+		Max = 14,
+		Default = 14,
 		Callback = function(callback)
 			StartSwing = callback
+		end,
+	})
+	SilentAura:CreateMiniToggle({
+		Name = "Silent",
+		Callback = function(callback)
+			Silent = callback
 		end,
 	})
 end)
@@ -388,7 +398,7 @@ task.defer(function()
 	Reach:CreateSlider({
 		Name = "Distance",
 		Min = 0,
-		Max = 12,
+		Max = 10,
 		Default = 5,
 		Callback = function(callback)
 			Distance = callback
@@ -447,9 +457,9 @@ task.defer(function()
 		Callback = function(callback)
 			repeat task.wait() until BedFight.Modules.VelocityUtils.Create
 			if callback then
-				Original = hookfunction(BedFight.Modules.VelocityUtils.Create, function(part, velo, ...)
+				Original = hookfunction(BedFight.Modules.VelocityUtils.Create, newcclosure(function(part, velo, ...)
 					return Original(part, Vector3.new(velo.X * (Knockback.X / 100), velo.Y * (Knockback.Y / 100), velo.Z * (Knockback.X / 100)), ...)
-				end)
+				end))
 			else
 				if Original then
 					hookfunction(BedFight.Modules.VelocityUtils.Create, Original)
@@ -476,6 +486,96 @@ task.defer(function()
 			Knockback.Y = callback
 		end
 	})	
+end)
+
+local AutoMLG
+task.defer(function()
+	local Placed, LastY = false, nil
+	local RayParams = RaycastParams.new()
+	RayParams.FilterType = Enum.RaycastFilterType.Exclude
+	RayParams.FilterDescendantsInstances = {LocalPlayer.Character}
+	AutoMLG = Sections.Movement:CreateToggle({
+		Name = "Auto MLG",
+		Callback = function(callback)
+			if callback then
+				Utility.BindAdd("Stepped", "AutoMLG", nil, function()
+					if not Utility.IsAlive(LocalPlayer) then return end
+					if BedFight.Functions.Utility.GetUI() then return end
+					if LocalPlayer.Character.PrimaryPart.AssemblyLinearVelocity.Y > 0 then
+						LastY = LocalPlayer.Character.PrimaryPart.Position.Y
+						Placed = false
+						return
+					end
+					if Placed or not LastY then return end
+					local Distance = LastY - LocalPlayer.Character.PrimaryPart.Position.Y
+					if Distance < 15 then return end
+					local SnapX = math.round(LocalPlayer.Character.PrimaryPart.Position.X / 3) * 3
+					local SnapZ = math.round(LocalPlayer.Character.PrimaryPart.Position.Z / 3) * 3
+					local Result = workspace:Raycast(Vector3.new(SnapX, LocalPlayer.Character.PrimaryPart.Position.Y, SnapZ), Vector3.new(0, -100, 0), RayParams)
+					if not Result then return end
+					if LocalPlayer.Character.PrimaryPart.Position.Y - Result.Position.Y > 8 then return end
+					local Tool = BedFight.Functions.Inventory.Character.Get()
+					if not Tool then Tool = BedFight.Functions.Inventory.Backpack.Get() end
+					if not Tool then return end
+					if BedFight.Functions.Tool.GetClass(Tool) ~= "Block" then return end
+					Placed = true
+					LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(SnapX, LocalPlayer.Character.PrimaryPart.Position.Y, SnapZ) * CFrame.Angles(0, math.atan2(-LocalPlayer.Character.PrimaryPart.CFrame.LookVector.X, -LocalPlayer.Character.PrimaryPart.CFrame.LookVector.Z), 0)
+					LocalPlayer.Character.PrimaryPart.AssemblyLinearVelocity = Vector3.new(0, LocalPlayer.Character.PrimaryPart.AssemblyLinearVelocity.Y, 0)
+					BedFight.Remotes.EquipTool:FireServer(Tool.Name)
+					BedFight.Remotes.PlaceBlock:FireServer(Tool.Name, 1, Vector3.new(SnapX, math.round((Result.Position.Y + 1.5) / 3) * 3, SnapZ))
+					task.spawn(function()
+						while Utility.IsAlive(LocalPlayer) do
+							task.wait()
+							if LocalPlayer.Character.PrimaryPart.Position.Y - Result.Position.Y <= 3.5 then
+								LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+								break
+							end
+						end
+					end)
+				end)
+			else
+				Utility.BindRemove("Stepped", "AutoMLG")
+				Placed, LastY = false, nil
+			end
+		end
+	})
+end)
+
+local BedAlarm
+task.defer(function()
+	local Notified = false
+	BedAlarm = Sections.Visual:CreateToggle({
+		Name = "Bed Alarm",
+		Callback = function(callback)
+			if callback then
+				Utility.BindAdd("Stepped", "BedAlarm", 0.5, function()
+					for _, bed in workspace.BedsContainer:GetChildren() do
+						local Team = bed:GetAttribute("Team")
+						if not Team then continue end
+						if Team ~= LocalPlayer.Team.Name then continue end
+						local Hitbox = bed:FindFirstChild("BedHitbox")
+						if not Hitbox then continue end
+						for _, v in Players:GetPlayers() do
+							if v == LocalPlayer then continue end
+							if v.Team == LocalPlayer.Team then continue end
+							if not Utility.IsAlive(v) then continue end
+							local Distance = (Hitbox.Position - v.Character.PrimaryPart.Position).Magnitude
+							if Distance < 15 and not Notified then
+								Notified = true
+								task.spawn(Core.CreateNotification, Core, "Bed Alarm", v.DisplayName .. " is near your bed!", 5)
+								task.delay(5, function()
+									Notified = false
+								end)
+							end
+						end
+					end
+				end)
+			else
+				Utility.BindRemove("Stepped", "BedAlarm")
+				Notified = false
+			end
+		end
+	})
 end)
 
 local BedDisplay
@@ -582,7 +682,7 @@ task.defer(function()
 	local ClockTime = Lighting.ClockTime
 	local Signal, New = nil, 12
 	TimeChanger = Sections.Visual:CreateToggle({
-		Name = "Time Changer",
+		Name = "TimeChanger",
 		Callback = function(callback)
 			if callback then
 				Lighting.ClockTime = New
@@ -617,7 +717,7 @@ task.defer(function()
 	local Original
 
 	ProjectileAssist = Sections.World:CreateToggle({
-		Name = "Projectile Assist",
+		Name = "ProjectileAssist",
 		Callback = function(callback)
 			repeat task.wait() until BedFight.ToolHandlers.Ranged.UpdateBeam
 			if callback then
@@ -706,6 +806,56 @@ task.defer(function()
 		Callback = function(callback)
 			Distance = callback
 		end
+	})
+end)
+
+local FakeKit
+task.defer(function()
+	local Kits = {}
+	local Original
+	local Signal, New = nil, "Specter"
+	for _, v in LocalPlayer.PlayerScripts.KitsManagerScript:GetChildren() do
+		if v:IsA("ModuleScript") and not table.find(Kits, v.Name) then
+			table.insert(Kits, v.Name)
+		end
+	end
+
+	FakeKit = Sections.Misc:CreateToggle({
+		Name = "Fake Kit",
+		Callback = function(callback)
+			repeat task.wait() until BedFight.Modules.ItemShopData.GetItemShop
+			if callback then
+				LocalPlayer.Kit.Value = New
+				Signal = LocalPlayer.Kit:GetPropertyChangedSignal("Value"):Connect(function()
+					LocalPlayer.Kit.Value = New
+				end)
+				Original = BedFight.Modules.ItemShopData.GetItemShop
+				BedFight.Modules.ItemShopData.GetItemShop = newcclosure(function(val1, val2)
+					return Original(val1, "")
+				end)
+			else
+				if Signal then
+					Signal:Disconnect()
+					Signal = nil
+				end
+				if Original then
+					BedFight.Modules.ItemShopData.GetItemShop = Original
+					Original = nil
+				end
+				LocalPlayer.Kit.Value = ""
+			end
+		end
+	})
+	FakeKit:CreateDropdown({
+		Name = "Kits",
+		List = Kits,
+		Default = "Specter",
+		Callback = function(callback)
+			New = callback
+			if Signal then
+				LocalPlayer.Kit.Value = New
+			end
+		end,
 	})
 end)
 
