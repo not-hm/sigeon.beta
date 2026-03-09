@@ -1,4 +1,4 @@
---Welcome skids! please do not skid my beautiful code! okay?!
+--Welcome skids! please do not skid my beautiful code! okay???!?!?!?!??!!
 repeat task.wait() until game:IsLoaded() and workspace.CurrentCamera
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/not-hm/sigeon.beta/refs/heads/main/library.lua"))()
 local Utility = loadstring(game:HttpGet("https://raw.githubusercontent.com/not-hm/sigeon.beta/refs/heads/main/utility.lua"))()
@@ -156,7 +156,7 @@ end)
 
 local Core = Library:Initialize()
 local Sections = {
-	Combat = Core:CreateSection(1, UDim2.new(0, 0, 2, -350)),
+	Combat = Core:CreateSection(1, UDim2.new(0, 0, 2, -200)),
 	Movement = Core:CreateSection(2, UDim2.new(0, 0, 0, 0)),
 	Visual = Core:CreateSection(3, UDim2.new(0, 0, 0, 0)),
 	World = Core:CreateSection(4, UDim2.new(0, 0, 0, 0)),
@@ -318,7 +318,7 @@ task.defer(function()
 						local EntityPosition = Vector3.new(Entity.Character.PrimaryPart.Position.X, LocalPlayer.Character.PrimaryPart.Position.Y, Entity.Character.PrimaryPart.Position.Z)
 						local LookCFrame = CFrame.lookAt(LocalPlayer.Character.PrimaryPart.Position, EntityPosition)
 						if Utility.IsFirstPerson() then
-							if Silent then return end
+							if not Silent then return end
 							workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, Entity.Character.PrimaryPart.Position)
 							LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position) * LookCFrame.Rotation
 						else
@@ -682,7 +682,7 @@ task.defer(function()
 	local ClockTime = Lighting.ClockTime
 	local Signal, New = nil, 12
 	TimeChanger = Sections.Visual:CreateToggle({
-		Name = "TimeChanger",
+		Name = "Time Changer",
 		Callback = function(callback)
 			if callback then
 				Lighting.ClockTime = New
@@ -717,7 +717,7 @@ task.defer(function()
 	local Original
 
 	ProjectileAssist = Sections.World:CreateToggle({
-		Name = "ProjectileAssist",
+		Name = "Projectile Assist",
 		Callback = function(callback)
 			repeat task.wait() until BedFight.ToolHandlers.Ranged.UpdateBeam
 			if callback then
