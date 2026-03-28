@@ -303,7 +303,7 @@ task.defer(function()
 		Name = "Silent Aura",
 		Callback = function(callback)
 			if callback then
-				Utility.BindAdd("Heartbeat", "KillAura", nil, function()
+				Utility.BindAdd("Heartbeat", "SilentAura", nil, function()
 					if not Utility.IsAlive(LocalPlayer) then return end
 					if BedFight.Functions.Utility.GetUI() then return end
 					local Tool = BedFight.Functions.Inventory.Character.Get()
@@ -319,17 +319,19 @@ task.defer(function()
 						if Utility.IsFirstPerson() then
 							if not Silent then return end
 							workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, Entity.Character.PrimaryPart.Position)
-							LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position) * LookCFrame.Rotation
-						else
-							LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position) * LookCFrame.Rotation
 						end
+						LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position) * LookCFrame.Rotation
 					end
 					if Distance <= StartSwing then
 						BedFight.Functions.Tool.Swing(Tool)
+						BedFight.Remotes.SwordHit:FireServer(
+							"Wooden Sword",
+							Entity.Character
+						)
 					end
 				end)
 			else
-				Utility.BindRemove("Heartbeat", "KillAura")
+				Utility.BindRemove("Heartbeat", "SilentAura")
 				BedFight.Functions.Tool.Reset()
 			end
 		end,
@@ -804,6 +806,46 @@ task.defer(function()
 		Default = 18,
 		Callback = function(callback)
 			Distance = callback
+		end
+	})
+end)
+
+local AntiStaff
+task.defer(function()
+	local Available = {}
+
+	AntiStaff = Sections.Misc:CreateToggle({
+		Name = "Anti Staff",
+		Callback = function(callback)
+			if callback then
+				Utility.BindAdd("Stepped", "AntiStaff", 5, function()
+					for _, v in Players:GetPlayers() do
+						local Role = v:GetRoleInGroupAsync(35136865)
+						if Role == "Support" or Role == "Manager" or Role == "Media Manager" or Role == "Recruiter" or Role == "Games" then --idc what yall said abt this method
+							if not table.find(Available, v.Name) then
+								Core:CreateNotification("Anti Staff", "Staff joined " .. v.Name, 15)
+								table.insert(Available, v.Name)
+							end
+						end
+					end
+					for i = #Available, 1, -1 do
+						local InGame = false
+						for _, v in Players:GetPlayers() do
+							if v.Name == Available[i] then
+								InGame = true
+								break
+							end
+						end
+						if not InGame then
+							Core:CreateNotification("Anti Staff", "Staff left " .. Available[i], 15)
+							table.remove(Available, i)
+						end
+					end
+				end)
+			else
+				Utility.BindRemove("Stepped", "AntiStaff")
+				table.clear(Available)
+			end
 		end
 	})
 end)
