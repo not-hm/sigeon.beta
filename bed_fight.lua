@@ -325,7 +325,7 @@ task.defer(function()
 					if Distance <= StartSwing then
 						BedFight.Functions.Tool.Swing(Tool)
 						BedFight.Remotes.SwordHit:FireServer(
-							"Wooden Sword",
+							Tool.Name,
 							Entity.Character
 						)
 					end
