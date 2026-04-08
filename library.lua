@@ -803,7 +803,7 @@ function Library:Initialize()
 				OnClicked()
 
 				if ToggleButton.Callback then
-					ToggleButton.Callback(ToggleButton.Enabled)
+					task.spawn(ToggleButton.Callback, ToggleButton.Enabled)
 				end
 			end
 
@@ -812,7 +812,7 @@ function Library:Initialize()
 				OnClicked()
 
 				if ToggleButton.Callback then
-					ToggleButton.Callback(ToggleButton.Enabled)
+					task.spawn(ToggleButton.Callback, ToggleButton.Enabled)
 				end
 			end)
 
@@ -823,7 +823,7 @@ function Library:Initialize()
 						OnClicked()
 
 						if ToggleButton.Callback then
-							ToggleButton.Callback(ToggleButton.Enabled)
+							task.spawn(ToggleButton.Callback, ToggleButton.Enabled)
 						end
 					end
 				end)
@@ -934,7 +934,7 @@ function Library:Initialize()
 					TextButton_9.MouseButton1Click:Connect(function()
 						Dropdown.Default = v
 						TextButton_8.Text = v
-						Dropdown.Callback(v)
+						task.spawn(Dropdown.Callback, v)
 						ConfigTable.Modules[ToggleButton.Name].Dropdowns[Dropdown.Name] = v
 					end)
 				end
@@ -945,7 +945,7 @@ function Library:Initialize()
 				
 				if Dropdown.Default then
 					TextButton_8.Text = Dropdown.Default
-					Dropdown.Callback(Dropdown.Default)
+					task.spawn(Dropdown.Callback, Dropdown.Default)
 				end
 				
 				return Dropdown	
@@ -1030,7 +1030,7 @@ function Library:Initialize()
 					Value = math.floor(((MouseX - TextButton_6.AbsolutePosition.X) / TextButton_6.AbsoluteSize.X) * (Slider.Max - Slider.Min) + Slider.Min + 0.05) * 10 / 10
 					Frame_2.Size = UDim2.new((Value - Slider.Min) / (Slider.Max - Slider.Min), 0, 1, 0)
 					TextBox_2.Text = Value
-					Slider.Callback(Value)
+					task.spawn(Slider.Callback, Value)
 					ConfigTable.Modules[ToggleButton.Name].Sliders[Slider.Name] = Value
 				end
 
@@ -1041,7 +1041,7 @@ function Library:Initialize()
 						Value = math.floor(((MouseX - TextButton_6.AbsolutePosition.X) / TextButton_6.AbsoluteSize.X) * (Slider.Max - Slider.Min) + Slider.Min + 0.05) * 10 / 10
 						Frame_2.Size = UDim2.new((Value - Slider.Min) / (Slider.Max - Slider.Min), 0, 1, 0)
 						TextBox_2.Text = Value
-						Slider.Callback(Value)
+						task.spawn(Slider.Callback, Value)
 					end
 				end)
 
@@ -1064,7 +1064,7 @@ function Library:Initialize()
 						Value = math.clamp(NumValue, Slider.Min, Slider.Max)
 						Frame_2.Size = UDim2.new((Value - Slider.Min) / (Slider.Max - Slider.Min), 0, 1, 0)
 						TextBox_2.Text = Value
-						Slider.Callback(Value)
+						task.spawn(Slider.Callback, Value)
 						ConfigTable.Modules[ToggleButton.Name].Sliders[Slider.Name] = Value
 					else
 						TextBox_2.Text = Value
@@ -1075,12 +1075,12 @@ function Library:Initialize()
 					Value = math.clamp(Slider.Default, Slider.Min, Slider.Max)
 					Frame_2.Size = UDim2.new((Value - Slider.Min) / (Slider.Max - Slider.Min), 0, 1, 0)
 					TextBox_2.Text = Value
-					Slider.Callback(Value)
+					task.spawn(Slider.Callback, Value)
 				else
 					Value = math.clamp(0, Slider.Min, Slider.Max)
 					Frame_2.Size = UDim2.new((Value - Slider.Min) / (Slider.Max - Slider.Min), 0, 1, 0)
 					TextBox_2.Text = Value
-					Slider.Callback(Value)
+					task.spawn(Slider.Callback, Value)
 				end
 				
 				return Slider	
@@ -1155,7 +1155,7 @@ function Library:Initialize()
 					OnClick()
 
 					if MiniToggle.Callback then
-						MiniToggle.Callback(MiniToggle.Enabled)
+						task.spawn(MiniToggle.Callback, MiniToggle.Enabled)
 					end
 				end
 
@@ -1164,7 +1164,7 @@ function Library:Initialize()
 					OnClick()
 
 					if MiniToggle.Callback then
-						MiniToggle.Callback(MiniToggle.Enabled)
+						task.spawn(MiniToggle.Callback, MiniToggle.Enabled)
 					end
 				end)
 				
