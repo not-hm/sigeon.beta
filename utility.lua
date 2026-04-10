@@ -98,21 +98,36 @@ Utility.GetMagnitude = function(pos1, pos2)
 	return (pos1 - pos2).Magnitude
 end
 
-Utility.GetTool = function(toolname)
-	for _, v in pairs(LocalPlayer.Backpack:GetChildren()) do
-		if v:IsA("Tool") and v.Name:lower():find(toolname:lower(), 1, true) then
-			return v
-		end
-	end
-end
-
-Utility.CheckTool = function(toolname)
-	for _, v in pairs(LocalPlayer.Character:GetChildren()) do
-		if v:IsA("Tool") and v.Name:lower():find(toolname:lower(), 1, true) then
-			return v
-		end
-	end
-end
+Utility.Inventory = {
+	Backpack = {
+		Find = function(toolname)
+			for _, v in LocalPlayer.Backpack:GetChildren() do
+				if v:IsA("Tool") and v.Name:lower():find(toolname:lower(), 1, true) then
+					return v
+				end
+			end
+		end,
+		Get = function()
+			for _, v in LocalPlayer.Backpack:GetChildren() do
+				if v:IsA("Tool") then return v end
+			end
+		end,
+	},
+	Character = {
+		Find = function(toolname)
+			for _, v in LocalPlayer.Character:GetChildren() do
+				if v:IsA("Tool") and v.Name:lower():find(toolname:lower(), 1, true) then
+					return v
+				end
+			end
+		end,
+		Get = function()
+			for _, v in LocalPlayer.Character:GetChildren() do
+				if v:IsA("Tool") then return v end
+			end
+		end,
+	}
+}
 
 Utility.GetNearestEntity = {
 	Distance = function(MaxDist, Mode, TeamCheck, WallCheck, Direction)
