@@ -87,6 +87,9 @@ Utility.GetTeam = function(v)
 		if v.Team.TeamColor == LocalPlayer.Team.TeamColor then
 			return LocalPlayer.Team
 		end
+		if v:GetAttribute("Team") == LocalPlayer:GetAttribute("Team") then --something funni :>
+			return LocalPlayer.Team
+		end
 	end
 	return nil
 end
