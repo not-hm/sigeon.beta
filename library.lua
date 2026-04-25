@@ -751,7 +751,7 @@ function Library:Initialize()
 			task.spawn(function()
 				if not MenuContainer then return end
 				while true do
-					task.wait(5)
+					task.wait(2.5)
 					if not MenuContainer.Parent then
 						break
 					end
@@ -759,7 +759,6 @@ function Library:Initialize()
 						MenuContainer:Destroy()
 						Frame_69.Size = UDim2.new(0, 200, 0, 10)
 						ToggleHolder.Size = TotalY(MenuContainer)
-						print("!")
 						break
 					end
 				end
