@@ -722,9 +722,10 @@ function Library:Initialize()
 			CreateStroke(MenuContainer, Color3.fromRGB(45, 65, 95), 1.5, 0.5)
 			local MenuStoke = MenuContainer:FindFirstChildOfClass("UIStroke")
 			
+			local Connection1
 			task.spawn(function()
-				MainFrame:GetPropertyChangedSignal("Visible"):Connect(function()
-					if MainFrame.Visible then
+				Connection1 = MainFrame:GetPropertyChangedSignal("Visible"):Connect(function()
+					if MainFrame.Visible and MenuContainer then
 						MenuContainer.Size = TotalY(MenuContainer)
 						ToggleHolder.Size = TotalY(MenuContainer)
 					end
@@ -749,19 +750,19 @@ function Library:Initialize()
 			Frame_69.Size = UDim2.new(0, 200, 0, 30)
 
 			task.spawn(function()
-    			if not MenuContainer then return end
-    			while true do
-        			task.wait(2.5)
-        			if not MenuContainer.Parent then
-            			break
-        			end
-        			if #MenuContainer:GetChildren() <= 4 then
-            			Frame_69.Size = UDim2.new(0, 200, 0, 10)
-            			ToggleHolder.Size = UDim2.new(0, 200, 0, 40)
-            			MenuContainer:Destroy()
-            			break
-        			end
-    			end
+				while task.wait() do
+					if not MenuContainer.Parent then break end
+					if #MenuContainer:GetChildren() <= 4 then
+						if Connection1 then
+							Connection1:Disconnect()
+							Connection1 = nil
+						end
+						MenuContainer:Destroy()
+						Frame_69:Destroy()
+						ToggleHolder.Size = UDim2.new(0, 200, 0, 40)
+						break
+					end
+				end
 			end)
 			
 			--
