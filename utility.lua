@@ -239,11 +239,11 @@ Utility.HighlightRemove = function(obj)
 	end
 end
 
-Utility.BillBoard = { --bread duel support fuck fuck fuck
+Utility.BillBoard = {
 	Create = function(obj)
 		if not obj or not obj:IsA("Model") then return end
 		if obj:FindFirstChildWhichIsA("BillboardGui") then return end
-
+		
 		local BillboardGui = Instance.new("BillboardGui")
 		BillboardGui.Parent = obj
 		BillboardGui.AlwaysOnTop = true
@@ -255,6 +255,10 @@ Utility.BillBoard = { --bread duel support fuck fuck fuck
 		Frame.Size = UDim2.fromScale(1, 1)
 		Frame.BackgroundTransparency = 1
 		Frame.Parent = BillboardGui
+		
+		local Corner = Instance.new("UICorner")
+		Corner.CornerRadius = UDim.new(0, 4)
+		Corner.Parent = Frame
 
 		local Layout = Instance.new("UIListLayout")
 		Layout.FillDirection = Enum.FillDirection.Horizontal
@@ -262,38 +266,26 @@ Utility.BillBoard = { --bread duel support fuck fuck fuck
 		Layout.VerticalAlignment = Enum.VerticalAlignment.Center
 		Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 		Layout.Parent = Frame
-		
 		Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-			BillboardGui.Size = UDim2.fromOffset(math.max(Layout.AbsoluteContentSize.X + 8, 36), 36)
+			BillboardGui.Size = UDim2.fromOffset(math.max(Layout.AbsoluteContentSize.X + 4, 36), 36)
 		end)
 	end,
-	Add = function(obj, content)
+	Add = function(obj, image)
 		if not obj or not obj:IsA("Model") then return end
 		local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
 		if not BillboardGui then return end
-		local Container = BillboardGui:FindFirstChildWhichIsA("Frame")
-		if not Container then return end
 
-		if typeof(content) == "string" then
-			local ImageLabel = Instance.new("ImageLabel")
-			ImageLabel.Size = UDim2.fromOffset(32, 32)
-			ImageLabel.BackgroundTransparency = 1
-			ImageLabel.Image = content
-			ImageLabel.Parent = Container
-		elseif typeof(content) == "Instance" then
-			content.Size = UDim2.fromOffset(32, 32)
-			if content:IsA("GuiObject") then
-				content.Parent = Container
-			end
-		end
+		local ImageLabel = Instance.new("ImageLabel")
+		ImageLabel.Size = UDim2.fromOffset(32, 32)
+		ImageLabel.BackgroundTransparency = 1
+		ImageLabel.Image = image
+		ImageLabel.Parent = BillboardGui:FindFirstChildWhichIsA("Frame")
 	end,
-	Delete = function(obj, content)
+	Delete = function(obj, image)
 		if not obj or not obj:IsA("Model") then return end
-		local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
-		if not BillboardGui then return end
-		
-		for _, v in pairs(BillboardGui:FindFirstChildWhichIsA("Frame"):GetChildren()) do
-			if (v:IsA("ImageLabel") and v.Image == content) or (v == content) then
+		if not obj:FindFirstChildWhichIsA("BillboardGui") then return end
+		for _, v in pairs(obj:FindFirstChildWhichIsA("BillboardGui"):GetChildren()) do
+			if v:IsA("ImageLabel") and v.Image == image then
 				v:Destroy()
 			end
 		end
