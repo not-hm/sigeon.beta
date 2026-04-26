@@ -245,7 +245,6 @@ Utility.BillBoard = { --bread duel support fuck fuck fuck
 		if obj:FindFirstChildWhichIsA("BillboardGui") then return end
 
 		local BillboardGui = Instance.new("BillboardGui")
-		BillboardGui.Name = "BedInfo"
 		BillboardGui.Parent = obj
 		BillboardGui.AlwaysOnTop = true
 		BillboardGui.StudsOffsetWorldSpace = Vector3.new(0, 3, 0)
