@@ -749,19 +749,19 @@ function Library:Initialize()
 			Frame_69.Size = UDim2.new(0, 200, 0, 30)
 
 			task.spawn(function()
-				if not MenuContainer then return end
-				while true do
-					task.wait(2.5)
-					if not MenuContainer.Parent then
-						break
-					end
-					if #MenuContainer:GetChildren() <= 4 then
-						MenuContainer:Destroy()
-						Frame_69.Size = UDim2.new(0, 200, 0, 10)
-						ToggleHolder.Size = TotalY(MenuContainer)
-						break
-					end
-				end
+    			if not MenuContainer then return end
+    			while true do
+        			task.wait(2.5)
+        			if not MenuContainer.Parent then
+            			break
+        			end
+        			if #MenuContainer:GetChildren() <= 4 then
+            			Frame_69.Size = UDim2.new(0, 200, 0, 10)
+            			ToggleHolder.Size = UDim2.new(0, 200, 0, 40)
+            			MenuContainer:Destroy()
+            			break
+        			end
+    			end
 			end)
 			
 			--
