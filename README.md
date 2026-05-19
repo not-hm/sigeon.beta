@@ -13,5 +13,6 @@ sigeon.beta is a specialized script developed by sigeon.pex corporation, current
 ```luau
 loadstring(game:HttpGet("https://raw.githubusercontent.com/not-hm/sigeon.beta/refs/heads/main/loader.lua"))()
 ```
-Note: Still in development
+Note: Still in development.
+
 Contact: https://discord.gg/vbaKx8UWU9
