@@ -824,7 +824,9 @@ function Library:Initialize()
 					MenuStoke.Color = Color3.fromRGB(45, 65, 95)
 					Remove_Array(ToggleButton.Name)
 				end
-				ConfigTable.Modules[ToggleButton.Name].Enabled = ToggleButton.Enabled
+				if not ToggleButton.AutoDisable then
+        			ConfigTable.Modules[ToggleButton.Name].Enabled = ToggleButton.Enabled
+    			end
 			end
 			
 			Add(UserInputService.InputBegan:Connect(function(Input, isTyping)
