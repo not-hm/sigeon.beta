@@ -18,7 +18,6 @@ local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local BridgeDuel = {}
 
-
 local Team
 local Crosshair, FakeCrosshair = nil, nil
 task.defer(function()
@@ -85,6 +84,21 @@ task.defer(function()
 					end
 					return false
 				end,
+				Positions = {
+					Get = function(pos)
+						return Vector3.new(math.floor((pos.X / 3) + 0.5) * 3, math.floor((pos.Y / 3) + 0.5) * 3, math.floor((pos.Z / 3) + 0.5) * 3)
+					end,
+					IsOccupied = function(pos)
+						for _, v in pairs(workspace.Map:GetDescendants()) do
+							if v:IsA("BasePart") and v.Name == "Block" then
+								if BridgeDuel.Functions.Utility.Positions.Get(v.Position) == pos then
+									return true
+								end
+							end
+						end
+						return false
+					end
+				}
 			}
 		}
 	}
@@ -352,6 +366,7 @@ task.defer(function()
 end)
 
 
+local LongJump
 local Velocity
 task.defer(function()
 	local Original = {Connection = nil, Function = nil}
@@ -369,11 +384,13 @@ task.defer(function()
 					v:Disable()
 				end
 				Connection = BridgeDuel.Remotes.KnockBackApplied.OnClientEvent:Connect(function(plr1, dir, pos, mag, data)
-					local Horizontal = mag * (Knockback.X / 100)
-					local Vertical = mag * (Knockback.Y / 100)
-					local Magnitude = (Horizontal + Vertical) / 2
-					if Original.Function then
-						task.spawn(Original.Function, plr1, dir, pos, Magnitude, data)
+					if not LongJump.Enabled then
+						local Horizontal = mag * (Knockback.X / 100)
+						local Vertical = mag * (Knockback.Y / 100)
+						local Magnitude = (Horizontal + Vertical) / 2
+						if Original.Function then
+							task.spawn(Original.Function, plr1, dir, pos, Magnitude, data)
+						end
 					end
 				end)
 			else
@@ -406,6 +423,86 @@ task.defer(function()
 	})
 end)
 
+task.defer(function()
+	local Original = {Connection = nil, Function = nil}
+	local Knockback = {X = 700, Y = 150}
+	local Connection
+
+	LongJump = Sections.Movement:CreateToggle({
+		Name = "Long Jump",
+		AutoDisable = true,
+		Callback = function(callback)
+			repeat task.wait() until BridgeDuel.Remotes.KnockBackApplied
+			if callback then
+				if Utility.Inventory.Backpack.Find("tnt") or Utility.Inventory.Character.Find("tnt") then
+					local v = getconnections(BridgeDuel.Remotes.KnockBackApplied.OnClientEvent)[1]
+					if v and v.Function then
+						Original.Function = v.Function
+						v:Disable()
+					end
+					Connection = BridgeDuel.Remotes.KnockBackApplied.OnClientEvent:Connect(function(plr1, dir, pos, mag, data)
+						local Horizontal = mag * (Knockback.X / 100)
+						local Vertical = mag * (Knockback.Y / 100)
+						local Magnitude = (Horizontal + Vertical) / 2
+						if Original.Function then
+							task.spawn(Original.Function, plr1, dir, pos, Magnitude, data)
+						end
+					end)
+					task.spawn(function()
+						local CurrentPos = LocalPlayer.Character.PrimaryPart.Position - Vector3.new(0, (LocalPlayer.Character.PrimaryPart.Size.Y / 2) + 1, 0)
+						local PlacePosition = BridgeDuel.Functions.Utility.Positions.Get(CurrentPos)
+						if not BridgeDuel.Functions.Utility.Positions.IsOccupied(PlacePosition) then
+							BridgeDuel.Blink.item_action.place_block.invoke({
+								["position"] = PlacePosition,
+								["block_type"] = "TNT",
+								["extra"] = {
+									["rizz"] = "Bro.",
+									["owo"] = "What's this? OwO",
+									["those"] = workspace.Name == "Ok"
+								}
+							})
+							BridgeDuel.Modules.Entity.LocalEntity:RemoveTool("TNTBlock", 1)
+							repeat task.wait() until (LocalPlayer.Character:FindFirstChildOfClass("Humanoid").FloorMaterial == Enum.Material.Air) and (math.abs(LocalPlayer.Character.PrimaryPart.Position.Y - CurrentPos.Y) > 3)
+							task.wait(3.8)
+							if Connection then
+								Connection:Disconnect()
+								Connection = nil
+							end
+							local v = getconnections(BridgeDuel.Remotes.KnockBackApplied.OnClientEvent)[1]
+							if v then v:Enable() end
+						end
+					end)
+				else
+					Core:CreateNotification("sigeon-chan", "you dont have tnt")
+					if Connection then
+						Connection:Disconnect()
+						Connection = nil
+					end
+					local v = getconnections(BridgeDuel.Remotes.KnockBackApplied.OnClientEvent)[1]
+					if v then v:Enable() end
+				end
+			end
+		end
+	})
+	LongJump:CreateSlider({
+		Name = "Horizontal",
+		Min = 0,
+		Max = 750,
+		Default = 700,
+		Callback = function(value)
+			Knockback.X = value
+		end
+	})
+	LongJump:CreateSlider({
+		Name = "Vertical",
+		Min = 0,
+		Max = 400,
+		Default = 150,
+		Callback = function(value)
+			Knockback.Y = value
+		end
+	})
+end)
 
 local BedAlarm
 task.defer(function()
@@ -599,7 +696,7 @@ task.defer(function()
 	})
 end)
 
-local ProjectileAssist
+local ProjectileAssist 
 task.defer(function()
 	local ChargeTime
 	local old
@@ -608,9 +705,9 @@ task.defer(function()
 		Name = "Projectile Assist",
 		Callback = function(callback)
 			if callback then
-				old = hookmetamethod(game, "__namecall", function(self, ...)
+				old = hookmetamethod(game, "__namecall", function(self, ...) -- i fucking hate hookmetamethod 
 					local method = getnamecallmethod()
-					if not checkcaller() and self == workspace.CurrentCamera and method == "ScreenPointToRay" then
+					if not checkcaller() and ProjectileAssist.Enabled and self == workspace.CurrentCamera and method == "ScreenPointToRay" then
 						local LocalEntity = BridgeDuel.Modules.Entity.LocalEntity
 						if LocalEntity and LocalEntity.IsChargingBow then
 							local Crosshair = LocalPlayer.PlayerGui.MainGui.Crosshair
@@ -618,7 +715,19 @@ task.defer(function()
 							local Size = Crosshair.AbsoluteSize
 							local X = Position.X + (Size.X / 2)
 							local Y = Position.Y + (Size.Y / 2)
-							return workspace.CurrentCamera:ViewportPointToRay(X, Y)
+							local Viewport = workspace.CurrentCamera.ViewportSize
+
+							local RelativeX = (X / Viewport.X) - 0.5
+							local RelativeY = (Y / Viewport.Y) - 0.5
+
+							local Fov = math.rad(workspace.CurrentCamera.FieldOfView)
+							local Aspect = Viewport.X / Viewport.Y
+
+							local Direction = workspace.CurrentCamera.CFrame.LookVector + (workspace.CurrentCamera.CFrame.RightVector * RelativeX * Aspect * math.tan(Fov / 2) * 2) - (workspace.CurrentCamera.CFrame.UpVector * RelativeY * math.tan(Fov / 2) * 2)
+							return Ray.new(
+								workspace.CurrentCamera.CFrame.Position,
+								Direction.Unit * 1000
+							)
 						end
 					end
 
@@ -648,7 +757,7 @@ task.defer(function()
 					end
 					local Entity = Utility.GetNearestEntity.Mouse(1000, 180, true, true)
 					if Entity and Entity.Character and Entity.Character.PrimaryPart then
-						local Origin = (workspace.CurrentCamera:ScreenPointToRay(workspace.CurrentCamera.ViewportSize.X / 2, FakeCrosshair.AbsolutePosition.Y)).Origin
+						local Origin = old(workspace.CurrentCamera, workspace.CurrentCamera.ViewportSize.X / 2, FakeCrosshair.AbsolutePosition.Y)
 						local Charge = math.clamp(tick() - ChargeTime, 0, 0.7)
 						local Speed = Charge >= 0.7 and 160 or Charge >= 0.5 and 120 or Charge >= 0.1 and 80 or 60
 						--
@@ -670,6 +779,10 @@ task.defer(function()
 				end)
 				--
 			else
+				if old then
+					hookmetamethod(game, "__namecall", old)
+					old = nil
+				end
 				Utility.BindRemove("Heartbeat", "ProjectileAssist")
 				ChargeTime = nil
 				--
@@ -861,7 +974,7 @@ local Shutdown
 task.defer(function()
 	Shutdown = Sections.Misc:CreateToggle({
 		Name = "Shutdown",
-		AutoDisable = True,
+		AutoDisable = true,
 		Callback = function(callback)
 			if callback then
 				Core:Uninject()
