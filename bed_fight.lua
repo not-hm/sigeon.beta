@@ -904,6 +904,7 @@ local Shutdown
 task.defer(function()
 	Shutdown = Sections.Misc:CreateToggle({
 		Name = "Shutdown",
+		AutoDisable = True,
 		Callback = function(callback)
 			if callback then
 				Core:Uninject()
