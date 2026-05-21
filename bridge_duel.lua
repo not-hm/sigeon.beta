@@ -598,7 +598,6 @@ task.defer(function()
 		end
 	})
 end)
---]]
 
 local ProjectileAssist
 task.defer(function()
@@ -684,6 +683,7 @@ task.defer(function()
 		end
 	})
 end)
+--]]
 
 local Breaker
 task.defer(function()
@@ -861,6 +861,7 @@ local Shutdown
 task.defer(function()
 	Shutdown = Sections.Misc:CreateToggle({
 		Name = "Shutdown",
+		AutoDisable = True,
 		Callback = function(callback)
 			if callback then
 				Core:Uninject()
