@@ -1,4 +1,7 @@
 repeat task.wait() until game:IsLoaded() and workspace.CurrentCamera
+if shared.sigeonpex then return end
+shared.sigeonpex = true
+
 local Library = {}
 local makefolder = makefolder or function(folder) end
 local isfolder = isfolder or function(folder) end
@@ -515,6 +518,7 @@ function Library:Initialize()
 	function Core:Uninject()
     	if Gooned then return end
     	Gooned = true
+		shared.sigeonpex = nil
 		pcall(writefile, CurrentGame, HttpService:JSONEncode(ConfigTable))
 		task.wait()
 		for _, v in ipairs(Threads) do
