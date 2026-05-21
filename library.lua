@@ -516,6 +516,7 @@ function Library:Initialize()
 	end))
 
 	function Core:Uninject()
+		task.wait(0.5)
     	if Gooned then return end
     	Gooned = true
 		shared.sigeonpex = nil
@@ -669,6 +670,7 @@ function Library:Initialize()
 				Name = ToggleButton.Name,
 				Enabled = ToggleButton.Enabled or false,
 				Keybind = ToggleButton.Keybind or "Euro",
+				AutoDisable = ToggleButton.AutoDisable or false,
 				Callback = ToggleButton.Callback or function() end,
 			}
 			local Enabled, Keybind = Configuration.Register.ToggleButton(ToggleButton.Name, ToggleButton.Enabled, ToggleButton.Keybind)
@@ -860,6 +862,19 @@ function Library:Initialize()
 					task.spawn(ToggleButton.Callback, ToggleButton.Enabled)
 				end
 			end)
+
+			if ToggleButton.AutoDisable then
+    			Start(function()
+        			while task.wait(1) do
+            			if Gooned then break end
+            			if ToggleButton.Enabled then
+                			ToggleButton.Enabled = false
+                			OnClicked()
+                			task.spawn(ToggleButton.Callback, false)
+            			end
+        			end
+    			end)
+			end
 
 			if ToggleButton.Keybind then
 				Add(UserInputService.InputBegan:Connect(function(Input, isTyping)
