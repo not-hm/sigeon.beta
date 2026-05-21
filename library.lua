@@ -515,19 +515,19 @@ function Library:Initialize()
 	function Core:Uninject()
     	if Gooned then return end
     	Gooned = true
-		task.wait(2.5)
-    	for _, v in ipairs(Threads) do
-	        pcall(task.cancel, v)
-	    end
-	    table.clear(Threads)
-	    for _, v in ipairs(Connections) do
+		pcall(writefile, CurrentGame, HttpService:JSONEncode(ConfigTable))
+		task.wait()
+		for _, v in ipairs(Threads) do
+		    pcall(task.cancel, v)
+    	end
+    	table.clear(Threads)
+    	for _, v in ipairs(Connections) do
         	if v.Connected then v:Disconnect() end
     	end
     	table.clear(Connections)
-	    pcall(writefile, CurrentGame, HttpService:JSONEncode(ConfigTable))
-	    task.defer(function()
+    	task.defer(function()
         	if ScreenGui and ScreenGui.Parent then
-	            ScreenGui:Destroy()
+            	ScreenGui:Destroy()
         	end
     	end)
 	end
