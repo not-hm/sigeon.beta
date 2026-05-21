@@ -6,6 +6,8 @@ local cloneref = cloneref or function(obj) return obj end
 local hookfunction = hookfunction or function(func, callback) end
 local hookmetamethod = hookmetamethod or function(func, callback) end
 local getconnections = getconnections or function(obj) return end
+local getnamecallmethod = getnamecallmethod or function(obj) return end
+local checkcaller = checkcaller or function() return true end
 
 local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 local UserInputService = cloneref(game:GetService("UserInputService"))
@@ -248,7 +250,7 @@ task.defer(function()
 	local RayParams = RaycastParams.new()
 	RayParams.FilterType = Enum.RaycastFilterType.Exclude
 	RayParams.FilterDescendantsInstances = {LocalPlayer.Character}
-	
+
 	SilentAura = Sections.Combat:CreateToggle({
 		Name = "Silent Aura",
 		Callback = function(callback)
@@ -409,7 +411,7 @@ local BedAlarm
 task.defer(function()
 	--if not (string.find(BridgeDuel.Modules.ServerData.Submode, "bedwars") or string.find(BridgeDuel.Modules.ServerData.Submode, "playground")) then return end
 	local Notified = false
-	
+
 	BedAlarm = Sections.Visual:CreateToggle({
 		Name = "Bed Alarm",
 		Callback = function(callback)
@@ -601,11 +603,28 @@ end)
 local ProjectileAssist
 task.defer(function()
 	local ChargeTime
-	
+	local old
+
 	ProjectileAssist = Sections.World:CreateToggle({
 		Name = "Projectile Assist",
 		Callback = function(callback)
 			if callback then
+				old = hookmetamethod(game, "__namecall", function(self, ...)
+					local method = getnamecallmethod()
+					if not checkcaller() and self == workspace.CurrentCamera and method == "ScreenPointToRay" then
+						local LocalEntity = BridgeDuel.Modules.Entity.LocalEntity
+						if LocalEntity and LocalEntity.IsChargingBow then
+							local Crosshair = LocalPlayer.PlayerGui.MainGui.Crosshair
+							local Position = Crosshair.AbsolutePosition
+							local Size = Crosshair.AbsoluteSize
+							local X = Position.X + (Size.X / 2)
+							local Y = Position.Y + (Size.Y / 2)
+							return workspace.CurrentCamera:ViewportPointToRay(X, Y)
+						end
+					end
+
+					return old(self, ...)
+				end)
 				Utility.BindAdd("Heartbeat", "ProjectileAssist", nil, function()
 					if not Utility.IsAlive(LocalPlayer) then return end
 					if BridgeDuel.Functions.Utility.GetUI() then return end
