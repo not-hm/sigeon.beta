@@ -900,4 +900,16 @@ task.defer(function()
 	})
 end)
 
+local Shutdown
+task.defer(function()
+	Shutdown = Sections.Misc:CreateToggle({
+		Name = "Shutdown",
+		Callback = function(callback)
+			if callback then
+				Core:Uninject()
+			end
+		end
+	})
+end)
+
 Core:CreateNotification("sigeon.pex", "loaded!", 3)
