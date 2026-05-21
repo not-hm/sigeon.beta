@@ -78,12 +78,6 @@ if isfile(CurrentGame) then
 	end
 end
 
-task.spawn(function()
-	while task.wait(2) do
-		writefile(CurrentGame, HttpService:JSONEncode(ConfigTable))
-	end
-end)
-
 local function TotalY(obj)
 	local layout = obj:FindFirstChildOfClass("UIListLayout")
 	if not layout then return obj.Size end
@@ -128,6 +122,33 @@ end
 
 function Library:Initialize()
 	local Core = {}
+	local Threads = {}
+    local Connections = {}
+    local Gooned = false
+
+	--
+	
+	local function Start(v)
+        local t = task.spawn(v)
+        table.insert(Threads, t)
+        return t
+    end
+
+    local function Add(v)
+        table.insert(Connections, v)
+        return v
+    end
+	
+	--
+
+	Start(function()
+    	while task.wait(2) do
+        	if Gooned then break end
+        	writefile(CurrentGame, HttpService:JSONEncode(ConfigTable))
+    	end
+	end)
+
+	--
 	
 	local ScreenGui = Instance.new("ScreenGui")
 	ScreenGui.Name = HttpService:GenerateGUID(false)
@@ -474,7 +495,7 @@ function Library:Initialize()
 		Notification:Destroy()
 	end
 	
-	UserInputService.InputBegan:Connect(function(Input, gameProcessedEvent)
+	Add(UserInputService.InputBegan:Connect(function(Input, gameProcessedEvent)
 		if Input.KeyCode == Enum.KeyCode.RightShift and not gameProcessedEvent then
 			MainFrame.Visible = not MainFrame.Visible
 			--[[
@@ -489,7 +510,27 @@ function Library:Initialize()
 			end
 			--]]
 		end
-	end)
+	end))
+
+	function Core:Uninject()
+    	if Gooned then return end
+    	Gooned = true
+		task.wait(2.5)
+    	for _, v in ipairs(Threads) do
+	        pcall(task.cancel, v)
+	    end
+	    table.clear(Threads)
+	    for _, v in ipairs(Connections) do
+        	if v.Connected then v:Disconnect() end
+    	end
+    	table.clear(Connections)
+	    pcall(writefile, CurrentGame, HttpService:JSONEncode(ConfigTable))
+	    task.defer(function()
+        	if ScreenGui and ScreenGui.Parent then
+	            ScreenGui:Destroy()
+        	end
+    	end)
+	end
 	
 	--
 	
@@ -723,7 +764,7 @@ function Library:Initialize()
 			local MenuStoke = MenuContainer:FindFirstChildOfClass("UIStroke")
 			
 			local Connection1
-			task.spawn(function()
+			Start(function()
 				Connection1 = MainFrame:GetPropertyChangedSignal("Visible"):Connect(function()
 					if MainFrame.Visible and MenuContainer then
 						MenuContainer.Size = TotalY(MenuContainer)
@@ -749,9 +790,9 @@ function Library:Initialize()
 			Frame_69.BackgroundTransparency = 1.000
 			Frame_69.Size = UDim2.new(0, 200, 0, 30)
 
-			task.spawn(function()
+			Start(function()
 				while task.wait() do
-					if not MenuContainer.Parent then break end
+					if Gooned or not MenuContainer.Parent then break end
 					if #MenuContainer:GetChildren() <= 4 then
 						if Connection1 then
 							Connection1:Disconnect()
@@ -780,7 +821,7 @@ function Library:Initialize()
 				ConfigTable.Modules[ToggleButton.Name].Enabled = ToggleButton.Enabled
 			end
 			
-			UserInputService.InputBegan:Connect(function(Input, isTyping)
+			Add(UserInputService.InputBegan:Connect(function(Input, isTyping)
 				if Input.UserInputType == Enum.UserInputType.Keyboard then
 					if TextBox:IsFocused() then
 						ToggleButton.Keybind = Input.KeyCode.Name
@@ -796,7 +837,7 @@ function Library:Initialize()
 						ConfigTable.Modules[ToggleButton.Name].Keybind = ToggleButton.Keybind
 					end       
 				end
-			end)
+			end))
 			
 			if ToggleButton.Enabled then
 				ToggleButton.Enabled = true
@@ -817,7 +858,7 @@ function Library:Initialize()
 			end)
 
 			if ToggleButton.Keybind then
-				UserInputService.InputBegan:Connect(function(Input, isTyping)
+				Add(UserInputService.InputBegan:Connect(function(Input, isTyping)
 					if Input.KeyCode == Enum.KeyCode[ToggleButton.Keybind] and not isTyping then
 						ToggleButton.Enabled = not ToggleButton.Enabled
 						OnClicked()
@@ -826,8 +867,17 @@ function Library:Initialize()
 							task.spawn(ToggleButton.Callback, ToggleButton.Enabled)
 						end
 					end
-				end)
+				end))
 			end
+
+			Start(function()
+    			repeat task.wait() until Gooned
+    			if ToggleButton.Enabled then
+        			ToggleButton.Enabled = false
+        			OnClicked()
+        			task.spawn(ToggleButton.Callback, false)
+    			end
+			end)
 			
 			function ToggleButton:CreateDropdown(Dropdown)
 				Dropdown = {
@@ -896,7 +946,7 @@ function Library:Initialize()
 				Frame_5.ZIndex = 2
 				CreateStroke(Frame_5, Color3.fromRGB(45, 65, 95), 1.5, 0.5)
 				
-				task.spawn(function()
+				Start(function()
 					Frame_5:GetPropertyChangedSignal("Visible"):Connect(function()
 						if Frame_5.Visible then
 							Frame_5.Size = TotalY(Frame_5)
@@ -1051,11 +1101,11 @@ function Library:Initialize()
 					end
 				end)
 
-				UserInputService.InputChanged:Connect(function(Input)
+				Add(UserInputService.InputChanged:Connect(function(Input)
 					if Dragged and (Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch) then
 						UpdateValue(Input)
 					end
-				end)
+				end))
 
 				TextBox_2.FocusLost:Connect(function(Return)
 					if not Return then return end
