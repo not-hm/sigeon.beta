@@ -610,7 +610,7 @@ task.defer(function()
 						for bname, count in Counts do
 							local data = BedFight.Modules.ItemsData[bname]
 							if not data or not data.Image then continue end
-							Utility.BillBoard.Add(bed, data.Image)
+							Utility.BillBoard.Add.Image(bed, data.Image)
 						end
 					end
 				end)
