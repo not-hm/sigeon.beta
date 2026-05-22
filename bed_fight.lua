@@ -579,17 +579,17 @@ task.defer(function()
 	})
 end)
 
-local BedDisplay
+local BedOverlay
 task.defer(function()
 	local OverParams = OverlapParams.new()
 	OverParams.FilterType = Enum.RaycastFilterType.Include
 	OverParams.FilterDescendantsInstances = {workspace.PlayersBlocksContainer}
 
-	BedDisplay = Sections.Visual:CreateToggle({
-		Name = "Bed Display",
+	BedOverlay = Sections.Visual:CreateToggle({
+		Name = "Bed Overlay",
 		Callback = function(callback)
 			if callback then
-				Utility.BindAdd("Heartbeat", "BedDisplay", 0.5, function()
+				Utility.BindAdd("Heartbeat", "BedOverlay", 0.5, function()
 					for _, bed in workspace.BedsContainer:GetChildren() do
 						local Team = bed:GetAttribute("Team")
 						if Team and LocalPlayer.Team and Team == LocalPlayer.Team.Name then
@@ -615,7 +615,7 @@ task.defer(function()
 					end
 				end)
 			else
-				Utility.BindRemove("Heartbeat", "BedDisplay")
+				Utility.BindRemove("Heartbeat", "BedOverlay")
 				for _, bed in workspace.BedsContainer:GetChildren() do
 					Utility.BillBoard.Remove(bed)
 				end
