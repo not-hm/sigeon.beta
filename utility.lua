@@ -246,6 +246,7 @@ Utility.BillBoard = {
 
 		local BillboardGui = Instance.new("BillboardGui")
 		BillboardGui.Parent = obj
+		BillboardGui.Adornee = obj
 		BillboardGui.AlwaysOnTop = true
 		BillboardGui.StudsOffsetWorldSpace = Vector3.new(0, 3, 0)
 		BillboardGui.Size = UDim2.fromOffset(36, 36)
