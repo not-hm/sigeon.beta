@@ -241,7 +241,7 @@ end
 
 Utility.BillBoard = {
 	Create = function(obj)
-		if not obj or not obj:IsA("Model") then return end
+		if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
 		if obj:FindFirstChildWhichIsA("BillboardGui") then return end
 
 		local BillboardGui = Instance.new("BillboardGui")
@@ -273,7 +273,7 @@ Utility.BillBoard = {
 	end,
 	Add = {
 		Image = function(obj, image, size)
-			if not obj or not obj:IsA("Model") then return end
+			if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
 			local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
 			if not BillboardGui then return end
 
@@ -289,7 +289,7 @@ Utility.BillBoard = {
 			return ImageLabel
 		end,
 		Text = function(obj, text, size)
-			if not obj or not obj:IsA("Model") then return end
+			if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
 			local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
 			if not BillboardGui then return end
 			
@@ -310,7 +310,7 @@ Utility.BillBoard = {
 	},
 	Delete = {
 		Image = function(obj, image)
-			if not obj or not obj:IsA("Model") then return end
+			if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
 			local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
 			if not BillboardGui then return end
 
@@ -324,8 +324,7 @@ Utility.BillBoard = {
 			end
 		end,
 		Text = function(obj, text)
-			if not obj or not obj:IsA("Model") then return end
-
+			if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
 			local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
 			if not BillboardGui then return end
 
@@ -339,8 +338,7 @@ Utility.BillBoard = {
 			end
 		end,
 		Object = function(obj, target)
-			if not obj or not obj:IsA("Model") then return end
-
+			if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
 			local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
 			if not BillboardGui then return end
 
@@ -355,7 +353,7 @@ Utility.BillBoard = {
 		end
 	},
 	Remove = function(obj)
-		if not obj or not obj:IsA("Model") then return end
+		if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
 		local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
 		if BillboardGui then
 			BillboardGui:Destroy()
