@@ -278,7 +278,6 @@ task.defer(function()
 				Utility.BindAdd("Heartbeat", "SilentAura", nil, function()
 					if not Utility.IsAlive(LocalPlayer) then return end
 					if BridgeDuel.Functions.Utility.GetUI() then return end
-					--
 					if not LocalPlayer.PlayerGui.MainGui:FindFirstChild("FakeCrosshair") then
 						Crosshair = LocalPlayer.PlayerGui.MainGui.Crosshair
 						FakeCrosshair = Crosshair:Clone()
@@ -287,7 +286,6 @@ task.defer(function()
 						FakeCrosshair.Parent = Crosshair.Parent
 						Crosshair.Image = "rbxassetid://10723346959"
 					end
-					--
 					local Tool = Utility.Inventory.Character.Find("sword")
 					if not Tool then return end
 					local Entity = Utility.GetNearestEntity.Distance(24, "Angle", Team.Enabled, true, 120)
@@ -295,7 +293,6 @@ task.defer(function()
 						Crosshair.Position = FakeCrosshair.Position
 						return
 					end
-					--
 					local Distance = Utility.GetMagnitude(Entity.Character.PrimaryPart.Position, LocalPlayer.Character.PrimaryPart.Position)
 					if Distance <= Distances then
 						Tool:Activate()
@@ -310,17 +307,14 @@ task.defer(function()
 					else
 						Crosshair.Position = FakeCrosshair.Position
 					end
-					--
 				end)
 			else
 				Utility.BindRemove("Heartbeat", "SilentAura")
-				--
 				if LocalPlayer.PlayerGui.MainGui:FindFirstChild("FakeCrosshair") then
 					Crosshair.Image = FakeCrosshair.Image
 					Crosshair.Position = FakeCrosshair.Position
 					FakeCrosshair:Destroy()
 				end
-				--
 			end
 		end,
 	})
@@ -842,7 +836,6 @@ task.defer(function()
 				Utility.BindAdd("Heartbeat", "ProjectileAssist", nil, function()
 					if not Utility.IsAlive(LocalPlayer) then return end
 					if BridgeDuel.Functions.Utility.GetUI() then return end
-					--
 					if not LocalPlayer.PlayerGui.MainGui:FindFirstChild("FakeCrosshair") then
 						Crosshair = LocalPlayer.PlayerGui.MainGui.Crosshair
 						FakeCrosshair = Crosshair:Clone()
@@ -851,7 +844,6 @@ task.defer(function()
 						FakeCrosshair.Parent = Crosshair.Parent
 						Crosshair.Image = "rbxassetid://10723346959"
 					end
-					--
 					local Tool = Utility.Inventory.Character.Find("bow")
 					if not Tool then return end
 					if BridgeDuel.Modules.Entity.LocalEntity.IsChargingBow then
@@ -866,11 +858,9 @@ task.defer(function()
 						local Origin = (workspace.CurrentCamera:ScreenPointToRay(workspace.CurrentCamera.ViewportSize.X / 2, FakeCrosshair.AbsolutePosition.Y)).Origin
 						local Charge = math.clamp(tick() - ChargeTime, 0, 0.7)
 						local Speed = Charge >= 0.7 and 160 or Charge >= 0.5 and 120 or Charge >= 0.1 and 80 or 60
-						--
 						local Predicted = Utility.GetPrediction(Entity.Character.PrimaryPart, Origin, Speed)
 						local Distance = (Predicted - Origin).Magnitude
 						local Time = Distance / Speed
-						--
 						local GravityComp = math.clamp(0.5 * workspace.Gravity * Time * Time, 0, 80)
 						Predicted = Vector3.new(Predicted.X, Predicted.Y + 1.5 + GravityComp, Predicted.Z)
 						local ScreenPos, OnScreen = workspace.CurrentCamera:WorldToViewportPoint(Predicted)
@@ -883,17 +873,14 @@ task.defer(function()
 						Crosshair.Position = FakeCrosshair.Position
 					end
 				end)
-				--
 			else
 				Utility.BindRemove("Heartbeat", "ProjectileAssist")
 				ChargeTime = nil
-				--
 				if LocalPlayer.PlayerGui.MainGui:FindFirstChild("FakeCrosshair") then
 					Crosshair.Image = FakeCrosshair.Image
 					Crosshair.Position = FakeCrosshair.Position
 					FakeCrosshair:Destroy()
 				end
-				--
 			end
 		end
 	})
@@ -916,7 +903,6 @@ task.defer(function()
 				Utility.BindAdd("Heartbeat", "Breaker", nil, function()
 					if not Utility.IsAlive(LocalPlayer) then return end
 					if BridgeDuel.Functions.Utility.GetUI() then return end
-					--
 					local MainGui = LocalPlayer.PlayerGui.MainGui
 					if not MainGui:FindFirstChild("FakeCrosshair") then
 						FakeCrosshair = MainGui.Crosshair:Clone()
@@ -924,7 +910,6 @@ task.defer(function()
 						FakeCrosshair.Parent = MainGui
 						MainGui.Crosshair.Image = "rbxassetid://10723346959"
 					end
-					--
 					if Current and not Current.Parent then Current = nil end
 					if not Current then
 						local Bed = BridgeDuel.Functions.Utility.GetBed()
@@ -996,7 +981,6 @@ task.defer(function()
 				IsBreaking = false
 				Current = nil
 				BridgeDuel.Blink.item_action.stop_break_block.fire(false)
-				--
 				local MainGui = LocalPlayer.PlayerGui.MainGui
 				if MainGui:FindFirstChild("FakeCrosshair") then
 					MainGui.Crosshair.Image = FakeCrosshair.Image
@@ -1004,7 +988,6 @@ task.defer(function()
 					FakeCrosshair:Destroy()
 					FakeCrosshair = nil
 				end
-				--
 			end
 		end
 	})
