@@ -8,6 +8,9 @@ local hookmetamethod = hookmetamethod or function(func, callback) end
 local getconnections = getconnections or function(obj) return end
 local getnamecallmethod = getnamecallmethod or function(obj) return end
 local checkcaller = checkcaller or function() return true end
+local newcclosure = newcclosure or function(func) return func end
+local getgc = getgc or function() return {} end
+local islclosure = islclosure or function(obj) return true end
 
 local ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
 local UserInputService = cloneref(game:GetService("UserInputService"))
@@ -83,6 +86,9 @@ task.defer(function()
 						if LocalPlayer.PlayerGui.MainGui:FindFirstChild("TeamUpgrades") and LocalPlayer.PlayerGui.MainGui.TeamUpgrades.Visible then return true end
 					end
 					return false
+				end,
+				GetMode = function()
+					return string.lower(BridgeDuel.Modules and BridgeDuel.Modules.ServerData and BridgeDuel.Modules.ServerData.Gamemode or "")
 				end,
 				Positions = {
 					Get = function(pos)
@@ -506,7 +512,7 @@ end)
 
 local BedAlarm
 task.defer(function()
-	--if not (string.find(BridgeDuel.Modules.ServerData.Submode, "bedwars") or string.find(BridgeDuel.Modules.ServerData.Submode, "playground")) then return end
+	if not (string.find(BridgeDuel.Functions.Utility.GetMode(), "bedwars") or string.find(BridgeDuel.Functions.Utility.GetMode(), "special")) then return end
 	local Notified = false
 
 	BedAlarm = Sections.Visual:CreateToggle({
@@ -542,41 +548,51 @@ task.defer(function()
 	})
 end)
 
-local BedDisplay
+local BedOverlay
 task.defer(function()
-	--if not (string.find(BridgeDuel.Modules.ServerData.Submode, "bedwars") or string.find(BridgeDuel.Modules.ServerData.Submode, "playground")) then return end
+	if not (string.find(BridgeDuel.Functions.Utility.GetMode(), "bedwars") or string.find(BridgeDuel.Functions.Utility.GetMode(), "special")) then return end
 	local OverParams = OverlapParams.new()
 	OverParams.FilterType = Enum.RaycastFilterType.Include
 	OverParams.FilterDescendantsInstances = {workspace.Map}
 
-	BedDisplay = Sections.Visual:CreateToggle({
-		Name = "Bed Display",
+	BedOverlay = Sections.Visual:CreateToggle({
+		Name = "Bed Overlay",
 		Callback = function(callback)
 			if callback then
-				Utility.BindAdd("Heartbeat", "BedDisplay", 0.5, function()
-					for _, bed in workspace.Map:GetChildren() do
+				Utility.BindAdd("Heartbeat", "BedOverlay", 0.5, function()
+					for _, bed in workspace.Map:GetDescendants() do
 						if not (bed:IsA("Model") and bed.Name == "Bed") then continue end
-						local Hitbox = bed:FindFirstChildWhichIsA("Part")
+						local Hitbox = bed:FindFirstChild("Block") or bed:FindFirstChildWhichIsA("Part")
 						if not Hitbox then Utility.BillBoard.Remove(bed) continue end
+						
 						local Counts = {}
-						for _, part in workspace:GetPartBoundsInBox(CFrame.new(Hitbox.Position), Vector3.new(20, 20, 20), OverParams) do
-							local blockType = part:GetAttribute("block_type")
-							if blockType and BridgeDuel.Constants.Blocks[blockType] then
-								Counts[blockType] = (Counts[blockType] or 0) + 1
+						local Result = workspace:GetPartBoundsInBox(CFrame.new(Hitbox.Position), Vector3.new(20, 20, 20), OverParams)
+						for _, part in Result do
+							local btype = part:GetAttribute("block_type")
+							if btype and BridgeDuel.Constants.Blocks[btype] then
+								Counts[btype] = (Counts[btype] or 0) + 1
 							end
 						end
+						
 						Utility.BillBoard.Remove(bed)
-						Utility.BillBoard.Create(bed)
-						for bname, count in Counts do
-							local image = BridgeDuel.Constants.Blocks[bname].Image
-							if not image then continue end
-							Utility.BillBoard.Add(bed, image)
+						local HasBlocks = false
+						for _ in Counts do
+							HasBlocks = true
+							break
+						end
+						if HasBlocks then
+							Utility.BillBoard.Create(bed)
+							for bname, count in Counts do
+								local image = BridgeDuel.Constants.Blocks[bname].Image
+								if not image then continue end
+								Utility.BillBoard.Add.Image(bed, image)
+							end
 						end
 					end
 				end)
 			else
-				Utility.BindRemove("Heartbeat", "BedDisplay")
-				for _, bed in workspace.Map:GetChildren() do
+				Utility.BindRemove("Heartbeat", "BedOverlay")
+				for _, bed in workspace.Map:GetDescendants() do
 					if not (bed:IsA("Model") and bed.Name == "Bed") then continue end
 					Utility.BillBoard.Remove(bed)
 				end
@@ -648,6 +664,96 @@ task.defer(function()
 	})
 end)
 
+local TNTOverlay --im unsure abt the blast cus its 3-4 blocks.
+task.defer(function()
+	if not (string.find(string.lower(BridgeDuel.Functions.Utility.GetMode()), "bedwars") or string.find(string.lower(BridgeDuel.Functions.Utility.GetMode()), "special")) then return end
+	local Existed = {}
+
+	TNTOverlay = Sections.Visual:CreateToggle({
+		Name = "TNT Overlay",
+		Callback = function(callback)
+			if callback then
+				Utility.BindAdd("Heartbeat", "TNTOverlay", 0.1, function()
+					for _, tnt in workspace.Map:GetChildren() do
+						if not (tnt:IsA("Part") and tnt.Name == "Block" and tnt:GetAttribute("block_type") == "TNT") then continue end
+						if not Existed[tnt] then Existed[tnt] = {Start = tick()}
+							local Sphere_1 = Instance.new("Part")
+							Sphere_1.Shape = Enum.PartType.Ball
+							Sphere_1.Material = Enum.Material.ForceField
+							Sphere_1.Transparency = 0.5
+							Sphere_1.Anchored = true
+							Sphere_1.CanCollide = false
+							Sphere_1.CanQuery = false
+							Sphere_1.CanTouch = false
+							Sphere_1.CastShadow = false
+							Sphere_1.Size = Vector3.new(22, 22, 22)
+							Sphere_1.Color = Color3.fromRGB(255, 255, 127)
+							Sphere_1.Parent = workspace.CurrentCamera
+							Sphere_1.CFrame = tnt.CFrame
+							Existed[tnt].Destruct = Sphere_1
+							
+							local Sphere_2 = Instance.new("Part")
+							Sphere_2.Shape = Enum.PartType.Ball
+							Sphere_2.Material = Enum.Material.ForceField
+							Sphere_2.Transparency = 0.5
+							Sphere_2.Anchored = true
+							Sphere_2.CanCollide = false
+							Sphere_2.CanQuery = false
+							Sphere_2.CanTouch = false
+							Sphere_2.CastShadow = false
+							Sphere_2.Size = Vector3.new(36, 36, 36)
+							Sphere_2.Color = Color3.fromRGB(255, 80, 80)
+							Sphere_2.Parent = workspace.CurrentCamera
+							Sphere_2.CFrame = tnt.CFrame
+							Existed[tnt].Blast = Sphere_2
+
+							Utility.BillBoard.Create(tnt)
+							Utility.BillBoard.Add.Text(tnt, "5.0", UDim2.fromOffset(24, 16))
+						end
+						local Data = Existed[tnt]
+						if Data.Destruct and Data.Blast then
+							Data.Destruct.CFrame = tnt.CFrame 
+							Data.Blast.CFrame = tnt.CFrame 
+						end
+						local Estimate = math.max(0, 4 - (tick() - Data.Start))
+						local BillboardGui = tnt:FindFirstChildWhichIsA("BillboardGui")
+						if BillboardGui then
+							local Frame = BillboardGui:FindFirstChildWhichIsA("Frame")
+							if Frame then
+								local Timer = Frame:FindFirstChildWhichIsA("TextLabel")
+								if Timer and Timer:IsA("TextLabel") then
+									Timer.Text = string.format("%.1f", Estimate)
+									Timer.TextColor3 = Color3.fromRGB(255, 255, 255)
+								end
+							end
+						end
+					end
+					for i, v in pairs(Existed) do
+						if not i or not i.Parent then
+							if v.Destruct and v.Blast then
+								v.Destruct:Destroy()
+								v.Blast:Destroy()
+							end
+							Utility.BillBoard.Remove(i)
+							Existed[i] = nil
+						end
+					end
+				end)
+			else
+				Utility.BindRemove("Heartbeat", "TNTOverlay")
+				for i, v in pairs(Existed) do
+					if v.Destruct and v.Blast then
+						v.Destruct:Destroy()
+						v.Blast:Destroy()
+					end
+					Utility.BillBoard.Remove(i)
+				end
+				table.clear(Existed)
+			end
+		end
+	})
+end)
+
 --[[
 local AutoSneak
 task.defer(function()
@@ -695,44 +801,44 @@ task.defer(function()
 		end
 	})
 end)
+--]]
 
-local ProjectileAssist 
+local ProjectileAssist
 task.defer(function()
+	local Existed = {}
 	local ChargeTime
 	local old
+	task.spawn(function()
+		task.wait(2.5) --im afraid it might broke at line 717 cus the ui hasnt been load (im lazy to add a proper fix)
+		for _, f in ipairs(getgc(true)) do
+			if type(f) == "function" and islclosure(f) then
+				local succ, const = pcall(debug.getconstants, f)
+				if succ and table.find(const, "CageHitbox") and table.find(const, "Crosshair") and table.find(const, "ScreenPointToRay") then
+					old = hookfunction(f, newcclosure(function(...)
+						if not ProjectileAssist.Enabled then return old(...) end
+						if not Crosshair then return old(...) end
+
+						local LocalEntity = BridgeDuel.Modules.Entity.LocalEntity
+						if not LocalEntity or not LocalEntity.IsChargingBow then return old(...) end
+
+						local Position = Crosshair.AbsolutePosition
+						local Size = Crosshair.AbsoluteSize
+						local X = Position.X + (Size.X / 2)
+						local Y = Position.Y + (Size.Y / 2)
+
+						local CrosshairRay = workspace.CurrentCamera:ScreenPointToRay(X, Y)
+						return CrosshairRay.Origin + CrosshairRay.Direction * 100
+					end))
+					table.insert(Existed, old)
+				end
+			end
+		end
+	end)
 
 	ProjectileAssist = Sections.World:CreateToggle({
 		Name = "Projectile Assist",
 		Callback = function(callback)
 			if callback then
-				old = hookmetamethod(game, "__namecall", function(self, ...) -- i fucking hate hookmetamethod 
-					local method = getnamecallmethod()
-					if not checkcaller() and ProjectileAssist.Enabled and self == workspace.CurrentCamera and method == "ScreenPointToRay" then
-						local LocalEntity = BridgeDuel.Modules.Entity.LocalEntity
-						if LocalEntity and LocalEntity.IsChargingBow then
-							local Crosshair = LocalPlayer.PlayerGui.MainGui.Crosshair
-							local Position = Crosshair.AbsolutePosition
-							local Size = Crosshair.AbsoluteSize
-							local X = Position.X + (Size.X / 2)
-							local Y = Position.Y + (Size.Y / 2)
-							local Viewport = workspace.CurrentCamera.ViewportSize
-
-							local RelativeX = (X / Viewport.X) - 0.5
-							local RelativeY = (Y / Viewport.Y) - 0.5
-
-							local Fov = math.rad(workspace.CurrentCamera.FieldOfView)
-							local Aspect = Viewport.X / Viewport.Y
-
-							local Direction = workspace.CurrentCamera.CFrame.LookVector + (workspace.CurrentCamera.CFrame.RightVector * RelativeX * Aspect * math.tan(Fov / 2) * 2) - (workspace.CurrentCamera.CFrame.UpVector * RelativeY * math.tan(Fov / 2) * 2)
-							return Ray.new(
-								workspace.CurrentCamera.CFrame.Position,
-								Direction.Unit * 1000
-							)
-						end
-					end
-
-					return old(self, ...)
-				end)
 				Utility.BindAdd("Heartbeat", "ProjectileAssist", nil, function()
 					if not Utility.IsAlive(LocalPlayer) then return end
 					if BridgeDuel.Functions.Utility.GetUI() then return end
@@ -757,7 +863,7 @@ task.defer(function()
 					end
 					local Entity = Utility.GetNearestEntity.Mouse(1000, 180, true, true)
 					if Entity and Entity.Character and Entity.Character.PrimaryPart then
-						local Origin = old(workspace.CurrentCamera, workspace.CurrentCamera.ViewportSize.X / 2, FakeCrosshair.AbsolutePosition.Y)
+						local Origin = (workspace.CurrentCamera:ScreenPointToRay(workspace.CurrentCamera.ViewportSize.X / 2, FakeCrosshair.AbsolutePosition.Y)).Origin
 						local Charge = math.clamp(tick() - ChargeTime, 0, 0.7)
 						local Speed = Charge >= 0.7 and 160 or Charge >= 0.5 and 120 or Charge >= 0.1 and 80 or 60
 						--
@@ -779,10 +885,6 @@ task.defer(function()
 				end)
 				--
 			else
-				if old then
-					hookmetamethod(game, "__namecall", old)
-					old = nil
-				end
 				Utility.BindRemove("Heartbeat", "ProjectileAssist")
 				ChargeTime = nil
 				--
@@ -796,10 +898,10 @@ task.defer(function()
 		end
 	})
 end)
---]]
 
 local Breaker
 task.defer(function()
+	if not (string.find(BridgeDuel.Functions.Utility.GetMode(), "bedwars") or string.find(BridgeDuel.Functions.Utility.GetMode(), "special")) then return end
 	local Distance, Current = nil, nil
 	local IsBreaking = false
 	local RayParams = RaycastParams.new()
