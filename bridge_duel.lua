@@ -1,4 +1,4 @@
---Welcome skids! please skid my beautiful code! okay???!?!?!?!??!!
+--Welcome skids! please do not skid my beautiful code! okay???!?!?!?!??!!
 repeat task.wait() until game:IsLoaded() and workspace.CurrentCamera
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/not-hm/sigeon.beta/refs/heads/main/library.lua"))()
 local Utility = loadstring(game:HttpGet("https://raw.githubusercontent.com/not-hm/sigeon.beta/refs/heads/main/utility.lua"))()
