@@ -1,7 +1,7 @@
 local cloneref = cloneref or function(obj) return obj end
 
-local RunService = cloneref(game:GetService("RunService"))
-local Players = cloneref(game:GetService("Players"))
+local RunService = cloneref(game:GetService('RunService'))
+local Players = cloneref(game:GetService('Players'))
 local CurrentCamera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
@@ -58,7 +58,7 @@ Utility.BindUpdate = function(types, name, delays)
 end
 
 Utility.IsAlive = function(obj)
-	return obj.Character and obj.Character.PrimaryPart and obj.Character:FindFirstChildOfClass("Humanoid") and obj.Character:FindFirstChildOfClass("Humanoid").Health > 0
+	return obj.Character and obj.Character.PrimaryPart and obj.Character:FindFirstChildOfClass('Humanoid') and obj.Character:FindFirstChildOfClass('Humanoid').Health > 0
 end
 
 Utility.IsExposed = function(obj)
@@ -87,7 +87,7 @@ Utility.GetTeam = function(v)
 		if v.Team.TeamColor == LocalPlayer.Team.TeamColor then
 			return LocalPlayer.Team
 		end
-		if v:GetAttribute("Team") == LocalPlayer:GetAttribute("Team") then --hopsex/hoplex yessir
+		if v:GetAttribute('Team') == LocalPlayer:GetAttribute('Team') then --hopsex/hoplex yessir
 			return LocalPlayer.Team
 		end
 	end
@@ -102,28 +102,28 @@ Utility.Inventory = {
 	Backpack = {
 		Find = function(toolname)
 			for _, v in LocalPlayer.Backpack:GetChildren() do
-				if v:IsA("Tool") and v.Name:lower():find(toolname:lower(), 1, true) then
+				if v:IsA('Tool') and v.Name:lower():find(toolname:lower(), 1, true) then
 					return v
 				end
 			end
 		end,
 		Get = function()
 			for _, v in LocalPlayer.Backpack:GetChildren() do
-				if v:IsA("Tool") then return v end
+				if v:IsA('Tool') then return v end
 			end
 		end,
 	},
 	Character = {
 		Find = function(toolname)
 			for _, v in LocalPlayer.Character:GetChildren() do
-				if v:IsA("Tool") and v.Name:lower():find(toolname:lower(), 1, true) then
+				if v:IsA('Tool') and v.Name:lower():find(toolname:lower(), 1, true) then
 					return v
 				end
 			end
 		end,
 		Get = function()
 			for _, v in LocalPlayer.Character:GetChildren() do
-				if v:IsA("Tool") then return v end
+				if v:IsA('Tool') then return v end
 			end
 		end,
 	}
@@ -146,11 +146,11 @@ Utility.GetNearestEntity = {
 						if Angle > (Direction / 2) then continue end
 					end
 					local Selected
-					if Mode == "Closest" then
+					if Mode == 'Closest' then
 						Selected = Magnitude
-					elseif Mode == "Lowest" then
-						Selected = v.Character:FindFirstChildOfClass("Humanoid").Health
-					elseif Mode == "Angle" then
+					elseif Mode == 'Lowest' then
+						Selected = v.Character:FindFirstChildOfClass('Humanoid').Health
+					elseif Mode == 'Angle' then
 						Selected = Angle
 					end
 					if Selected and Selected < MinDist then
@@ -217,9 +217,9 @@ Utility.GetPrediction = function(primarypart, origin, speed)
 end
 
 Utility.HighlightAdd = function(obj)
-	if not obj or not obj:IsA("Model") then return end
-	if obj:FindFirstChildWhichIsA("Highlight") then return end
-	local Highlight = Instance.new("Highlight")
+	if not obj or not obj:IsA('Model') then return end
+	if obj:FindFirstChildWhichIsA('Highlight') then return end
+	local Highlight = Instance.new('Highlight')
 	Highlight.FillTransparency = 1
 	Highlight.OutlineTransparency = 0
 	local NewColor = Color3.fromRGB(63, 92, 132)
@@ -232,8 +232,8 @@ Utility.HighlightAdd = function(obj)
 end
 
 Utility.HighlightRemove = function(obj)
-	if not obj or not obj:IsA("Model") then return end
-	local Highlight = obj:FindFirstChildWhichIsA("Highlight")
+	if not obj or not obj:IsA('Model') then return end
+	local Highlight = obj:FindFirstChildWhichIsA('Highlight')
 	if Highlight then
 		Highlight:Destroy()
 	end
@@ -241,10 +241,10 @@ end
 
 Utility.BillBoard = {
 	Create = function(obj)
-		if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
-		if obj:FindFirstChildWhichIsA("BillboardGui") then return end
+		if not obj or not (obj:IsA('Model') or obj:IsA('BasePart')) then return end
+		if obj:FindFirstChildWhichIsA('BillboardGui') then return end
 
-		local BillboardGui = Instance.new("BillboardGui")
+		local BillboardGui = Instance.new('BillboardGui')
 		BillboardGui.Parent = obj
 		BillboardGui.Adornee = obj
 		BillboardGui.AlwaysOnTop = true
@@ -252,35 +252,35 @@ Utility.BillBoard = {
 		BillboardGui.Size = UDim2.fromOffset(36, 36)
 		BillboardGui.ClipsDescendants = false
 
-		local Frame = Instance.new("Frame")
+		local Frame = Instance.new('Frame')
 		Frame.Size = UDim2.fromScale(1, 1)
 		Frame.BackgroundTransparency = 1
 		Frame.Parent = BillboardGui
 
-		local Corner = Instance.new("UICorner")
+		local Corner = Instance.new('UICorner')
 		Corner.CornerRadius = UDim.new(0, 4)
 		Corner.Parent = Frame
 
-		local Layout = Instance.new("UIListLayout")
+		local Layout = Instance.new('UIListLayout')
 		Layout.FillDirection = Enum.FillDirection.Horizontal
 		Layout.Padding = UDim.new(0, 4)
 		Layout.VerticalAlignment = Enum.VerticalAlignment.Center
 		Layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 		Layout.Parent = Frame
-		Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		Layout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
 			BillboardGui.Size = UDim2.fromOffset(math.max(Layout.AbsoluteContentSize.X + 8, 36), 36)
 		end)
 	end,
 	Add = {
 		Image = function(obj, image, size)
-			if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
-			local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
+			if not obj or not (obj:IsA('Model') or obj:IsA('BasePart')) then return end
+			local BillboardGui = obj:FindFirstChildWhichIsA('BillboardGui')
 			if not BillboardGui then return end
 
-			local Container = BillboardGui:FindFirstChildWhichIsA("Frame")
+			local Container = BillboardGui:FindFirstChildWhichIsA('Frame')
 			if not Container then return end
 
-			local ImageLabel = Instance.new("ImageLabel")
+			local ImageLabel = Instance.new('ImageLabel')
 			ImageLabel.Size = size or UDim2.fromOffset(32, 32)
 			ImageLabel.BackgroundTransparency = 1
 			ImageLabel.Image = image
@@ -289,14 +289,14 @@ Utility.BillBoard = {
 			return ImageLabel
 		end,
 		Text = function(obj, text, size)
-			if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
-			local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
+			if not obj or not (obj:IsA('Model') or obj:IsA('BasePart')) then return end
+			local BillboardGui = obj:FindFirstChildWhichIsA('BillboardGui')
 			if not BillboardGui then return end
-			
-			local Container = BillboardGui:FindFirstChildWhichIsA("Frame")
+
+			local Container = BillboardGui:FindFirstChildWhichIsA('Frame')
 			if not Container then return end
 
-			local TextLabel = Instance.new("TextLabel")
+			local TextLabel = Instance.new('TextLabel')
 			TextLabel.Size = size or UDim2.fromOffset(48, 32)
 			TextLabel.BackgroundTransparency = 1
 			TextLabel.Text = tostring(text)
@@ -310,39 +310,39 @@ Utility.BillBoard = {
 	},
 	Delete = {
 		Image = function(obj, image)
-			if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
-			local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
+			if not obj or not (obj:IsA('Model') or obj:IsA('BasePart')) then return end
+			local BillboardGui = obj:FindFirstChildWhichIsA('BillboardGui')
 			if not BillboardGui then return end
 
-			local Container = BillboardGui:FindFirstChildWhichIsA("Frame")
+			local Container = BillboardGui:FindFirstChildWhichIsA('Frame')
 			if not Container then return end
-			
+
 			for _, v in pairs(Container:GetChildren()) do
-				if v:IsA("ImageLabel") and v.Image == image then
+				if v:IsA('ImageLabel') and v.Image == image then
 					v:Destroy()
 				end
 			end
 		end,
 		Text = function(obj, text)
-			if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
-			local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
+			if not obj or not (obj:IsA('Model') or obj:IsA('BasePart')) then return end
+			local BillboardGui = obj:FindFirstChildWhichIsA('BillboardGui')
 			if not BillboardGui then return end
 
-			local Container = BillboardGui:FindFirstChildWhichIsA("Frame")
+			local Container = BillboardGui:FindFirstChildWhichIsA('Frame')
 			if not Container then return end
 
 			for _, v in pairs(Container:GetChildren()) do
-				if v:IsA("TextLabel") and v.Text == tostring(text) then
+				if v:IsA('TextLabel') and v.Text == tostring(text) then
 					v:Destroy()
 				end
 			end
 		end,
 		Object = function(obj, target)
-			if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
-			local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
+			if not obj or not (obj:IsA('Model') or obj:IsA('BasePart')) then return end
+			local BillboardGui = obj:FindFirstChildWhichIsA('BillboardGui')
 			if not BillboardGui then return end
 
-			local Container = BillboardGui:FindFirstChildWhichIsA("Frame")
+			local Container = BillboardGui:FindFirstChildWhichIsA('Frame')
 			if not Container then return end
 
 			for _, v in pairs(Container:GetChildren()) do
@@ -353,8 +353,8 @@ Utility.BillBoard = {
 		end
 	},
 	Remove = function(obj)
-		if not obj or not (obj:IsA("Model") or obj:IsA("BasePart")) then return end
-		local BillboardGui = obj:FindFirstChildWhichIsA("BillboardGui")
+		if not obj or not (obj:IsA('Model') or obj:IsA('BasePart')) then return end
+		local BillboardGui = obj:FindFirstChildWhichIsA('BillboardGui')
 		if BillboardGui then
 			BillboardGui:Destroy()
 		end
