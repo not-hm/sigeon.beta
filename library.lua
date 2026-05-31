@@ -1,5 +1,5 @@
 repeat task.wait() until game:IsLoaded() and workspace.CurrentCamera
-if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled and not UserInputService.MouseEnabled then --BYE BYE MOBILE USER AHHAHAHA
+if game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").KeyboardEnabled and not game:GetService("UserInputService").MouseEnabled then --BYE BYE MOBILE USER AHHAHAHA
 	StarterGui:SetCore("SendNotification", { 
 		Title = "sigeon.pex",
 		Text = "no mobile support yet",
