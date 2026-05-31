@@ -1,4 +1,12 @@
 repeat task.wait() until game:IsLoaded() and workspace.CurrentCamera
+if UserInputService.TouchEnabled and not UserInputService.KeyboardEnabled and not UserInputService.MouseEnabled then --BYE BYE MOBILE USER AHHAHAHA
+	StarterGui:SetCore("SendNotification", { 
+		Title = "sigeon.pex",
+		Text = "no mobile support yet",
+		Icon = "rbxassetid://12435962893",
+		Duration = 3,
+	})
+end
 if shared.sigeonpex then return end
 shared.sigeonpex = true
 
