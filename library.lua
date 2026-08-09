@@ -8,9 +8,7 @@ if game:GetService('UserInputService').TouchEnabled and not game:GetService('Use
 	})
 end
 
-if shared.sigeonpex then return shared.sigeonpex end
 local Library = {}
-shared.sigeonpex = Library
 local makefolder = makefolder or function(folder) end
 local isfolder = isfolder or function(folder) end
 local writefile = writefile or function(file, data) end
