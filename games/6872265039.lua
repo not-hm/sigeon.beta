@@ -99,11 +99,14 @@ task.defer(function()
 				Utility.Misc.Events.Add('Heartbeat', 'AutoClicker', 0, function()
 					if not Utility.Entity.IsAlive(LocalPlayer) then return end
 					local Tool
-                    if Bedwars.GetController('SwordController'):getHandItem().tool then
-                        Tool = 'Melee'
-                    elseif Bedwars.GetModule('inventory-util').getInventory(LocalPlayer).hand.itemType then
-                        Tool = 'Block'
-                    end
+                    local Inventory = Bedwars.GetModule('inventory-util').getInventory(LocalPlayer)
+					local Hand = Inventory and Inventory.hand
+
+					if Bedwars.GetController('SwordController'):getHandItem().tool then
+    					Tool = 'Melee'
+					elseif Hand and Hand.itemType then
+    					Tool = 'Block'
+					end
 					if Randomize then
 						CCPS = math.random(MinCPS, MaxCPS)
 					else
@@ -121,7 +124,8 @@ task.defer(function()
                             if not BlockPlacer then return end
                             local Selector = BlockPlacer.clientManager:getBlockSelector()
                             if not Selector then return end
-                            local MouseInfo = Selector:getMouseInfo(Selector.PLACE)
+							local BlockSelectorMode = Bedwars.GetModule('block-selector').BlockSelectorMode
+                            local MouseInfo = Selector:getMouseInfo(BlockSelectorMode.PLACE)
                             if MouseInfo then
                                 BlockPlacer:placeBlock(MouseInfo.placementPosition, MouseInfo)
                             end
