@@ -13,7 +13,6 @@ local Lighting = cloneref(game:GetService('Lighting'))
 local Players = cloneref(game:GetService('Players'))
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
-local Bedwars = {}
 
 local Team
 local Core = Library:Initialize()
