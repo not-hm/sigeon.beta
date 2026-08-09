@@ -275,7 +275,7 @@ Utility.Entity = {
             local R15 = {'Head', 'UpperTorso', 'LowerTorso', 'LeftUpperArm', 'LeftLowerArm', 'LeftHand', 'RightUpperArm', 'RightLowerArm', 'RightHand', 'LeftUpperLeg', 'LeftLowerLeg', 'LeftFoot', 'RightUpperLeg', 'RightLowerLeg', 'RightFoot'}
             if not obj or not obj:IsA('Model') then return nil end
             local Humanoid = obj:WaitForChild('Humanoid', 67)
-            local BodyRig  Humanoid.RigType
+            local BodyRig = Humanoid.RigType
             local Parts = {}
             if BodyRig == Enum.HumanoidRigType.R6 then
                 for _, v in ipairs(R6) do
@@ -284,7 +284,7 @@ Utility.Entity = {
                         table.insert(Parts, part)
                     end
                 end
-            elseif BodyRig.HumanoidRigType.R15 then
+            elseif BodyRig == Enum.HumanoidRigType.R15 then
                 for _, v in ipairs(R15) do
                     local part = obj:FindFirstChild(v)
                     if part and part:IsA('BasePart') then
