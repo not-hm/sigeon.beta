@@ -98,11 +98,12 @@ task.defer(function()
 			if callback then
 				Utility.Misc.Events.Add('Heartbeat', 'AutoClicker', 0, function()
 					if not Utility.Entity.IsAlive(LocalPlayer) then return end
-					local Tool
+					local HandItem = Bedwars.GetController('SwordController'):getHandItem()
                     local Inventory = Bedwars.GetModule('inventory-util').getInventory(LocalPlayer)
 					local Hand = Inventory and Inventory.hand
-
-					if Bedwars.GetController('SwordController'):getHandItem().tool then
+					
+					local Tool
+					if HandItem and HandItem.tool then
     					Tool = 'Melee'
 					elseif Hand and Hand.itemType then
     					Tool = 'Block'
