@@ -1,9 +1,9 @@
 repeat task.wait() until game:IsLoaded() and workspace.CurrentCamera
-if game:GetService("UserInputService").TouchEnabled and not game:GetService("UserInputService").KeyboardEnabled and not game:GetService("UserInputService").MouseEnabled then --BYE BYE MOBILE USER AHHAHAHA
-	game:GetService("StarterGui"):SetCore("SendNotification", { 
-		Title = "sigeon.pex",
-		Text = "no mobile support yet",
-		Icon = "rbxassetid://12435962893",
+if game:GetService('UserInputService').TouchEnabled and not game:GetService('UserInputService').KeyboardEnabled and not game:GetService('UserInputService').MouseEnabled then --BYE BYE MOBILE USER AHHAHAHA
+	game:GetService('StarterGui'):SetCore('SendNotification', { 
+		Title = 'sigeon.pex',
+		Text = 'no mobile support yet',
+		Icon = 'rbxassetid://12435962893',
 		Duration = 3,
 	})
 end
@@ -20,12 +20,12 @@ local cloneref = cloneref or function(obj)
 	return obj
 end
 
-local UserInputService = cloneref(game:GetService("UserInputService"))
-local TweenService = cloneref(game:GetService("TweenService"))
-local TextService = cloneref(game:GetService("TextService"))
-local HttpService = cloneref(game:GetService("HttpService"))
-local RunService = cloneref(game:GetService("RunService"))
-local Players = cloneref(game:GetService("Players"))
+local UserInputService = cloneref(game:GetService('UserInputService'))
+local TweenService = cloneref(game:GetService('TweenService'))
+local TextService = cloneref(game:GetService('TextService'))
+local HttpService = cloneref(game:GetService('HttpService'))
+local RunService = cloneref(game:GetService('RunService'))
+local Players = cloneref(game:GetService('Players'))
 local LocalPlayer = Players.LocalPlayer
 local ConfigTable = {Modules = {}}
 local Configuration = {}
@@ -73,15 +73,15 @@ Configuration.Register = {
 }
 
 local gethui = gethui or function()
-	return (RunService:IsStudio() and LocalPlayer.PlayerGui) or cloneref(game:GetService("CoreGui"))
+	return (RunService:IsStudio() and LocalPlayer.PlayerGui) or cloneref(game:GetService('CoreGui'))
 end
 
-local CurrentGame = "sigeon" .. "/" .. game.PlaceId .. ".lua"
-if not isfolder("sigeon") then makefolder("sigeon") end
+local CurrentGame = 'sigeon' .. '/' .. game.PlaceId .. '.lua'
+if not isfolder('sigeon') then makefolder('sigeon') end
 
 if isfile(CurrentGame) then
 	local GetMain = readfile(CurrentGame)
-	if GetMain and GetMain ~= "" then
+	if GetMain and GetMain ~= '' then
 		local Success, OldSettings = pcall(HttpService.JSONDecode, HttpService, GetMain)
 		if Success and OldSettings then
 			ConfigTable = OldSettings
@@ -90,14 +90,14 @@ if isfile(CurrentGame) then
 end
 
 local function TotalY(obj)
-	local layout = obj:FindFirstChildOfClass("UIListLayout")
+	local layout = obj:FindFirstChildOfClass('UIListLayout')
 	if not layout then return obj.Size end
 	return UDim2.new(obj.Size.X.Scale, obj.Size.X.Offset, 0, layout.AbsoluteContentSize.Y + 10)
 	--slider = 10
 end
 
 local function CreateStroke(obj, clr, thick, trans, mode)
-	local UIStroke = Instance.new("UIStroke")
+	local UIStroke = Instance.new('UIStroke')
 	UIStroke.Parent = obj
 	UIStroke.BorderStrokePosition = Enum.BorderStrokePosition.Center
 	UIStroke.Color = clr or Color3.fromRGB(45, 65, 95)
@@ -161,7 +161,7 @@ function Library:Initialize()
 
 	--
 	
-	local ScreenGui = Instance.new("ScreenGui")
+	local ScreenGui = Instance.new('ScreenGui')
 	ScreenGui.Name = HttpService:GenerateGUID(false)
 	ScreenGui.ResetOnSpawn = false
 	if RunService:IsStudio() then
@@ -172,7 +172,7 @@ function Library:Initialize()
 	
 	--
 
-	local MainFrame = Instance.new("Frame")
+	local MainFrame = Instance.new('Frame')
 	MainFrame.Parent = ScreenGui
 	MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 	MainFrame.BackgroundColor3 = Color3.fromRGB(25, 35, 50)
@@ -181,13 +181,13 @@ function Library:Initialize()
 	MainFrame.Size = UDim2.new(0, 650, 0, 450)
 	MainFrame.Visible = false
 
-	local UICorner = Instance.new("UICorner")
+	local UICorner = Instance.new('UICorner')
 	UICorner.CornerRadius = UDim.new(0, 4)
 	UICorner.Parent = MainFrame
 	
 	CreateStroke(MainFrame)
 
-	local MainContainer = Instance.new("Frame")
+	local MainContainer = Instance.new('Frame')
 	MainContainer.Parent = MainFrame
 	MainContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	MainContainer.BackgroundTransparency = 1.000
@@ -195,7 +195,7 @@ function Library:Initialize()
 	MainContainer.BorderSizePixel = 0
 	MainContainer.Size = UDim2.new(0, 200, 1, 0)
 
-	local ProfileContainer = Instance.new("Frame")
+	local ProfileContainer = Instance.new('Frame')
 	ProfileContainer.Parent = MainContainer
 	ProfileContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	ProfileContainer.BackgroundTransparency = 1.000
@@ -203,7 +203,7 @@ function Library:Initialize()
 	ProfileContainer.BorderSizePixel = 0
 	ProfileContainer.Size = UDim2.new(1, 0, 0, 100)
 
-	local ImageLabel = Instance.new("ImageLabel")
+	local ImageLabel = Instance.new('ImageLabel')
 	ImageLabel.Parent = ProfileContainer
 	ImageLabel.AnchorPoint = Vector2.new(0.5, 0.5)
 	ImageLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -212,15 +212,15 @@ function Library:Initialize()
 	ImageLabel.BorderSizePixel = 0
 	ImageLabel.Position = UDim2.new(0.25, 0, 0.5, 0)
 	ImageLabel.Size = UDim2.new(0, 50, 0, 50)
-	ImageLabel.Image = "rbxassetid://89022270094032"
+	ImageLabel.Image = 'rbxassetid://89022270094032'
 
-	local UICorner_2 = Instance.new("UICorner")
+	local UICorner_2 = Instance.new('UICorner')
 	UICorner_2.CornerRadius = UDim.new(0, 4)
 	UICorner_2.Parent = ImageLabel
 	
 	CreateStroke(ImageLabel)
 
-	local UserLabel = Instance.new("TextLabel")
+	local UserLabel = Instance.new('TextLabel')
 	UserLabel.Parent = ProfileContainer
 	UserLabel.AnchorPoint = Vector2.new(0.5, 0.5)
 	UserLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -237,11 +237,11 @@ function Library:Initialize()
 	UserLabel.TextWrapped = true
 	UserLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-	local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+	local UITextSizeConstraint = Instance.new('UITextSizeConstraint')
 	UITextSizeConstraint.Parent = UserLabel
 	UITextSizeConstraint.MaxTextSize = 18
 
-	local GameLabel = Instance.new("TextLabel")
+	local GameLabel = Instance.new('TextLabel')
 	GameLabel.Parent = ProfileContainer
 	GameLabel.AnchorPoint = Vector2.new(0.5, 0.5)
 	GameLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -259,11 +259,11 @@ function Library:Initialize()
 	GameLabel.TextWrapped = true
 	GameLabel.TextXAlignment = Enum.TextXAlignment.Left
 	
-	local UITextSizeConstraint_2 = Instance.new("UITextSizeConstraint")
+	local UITextSizeConstraint_2 = Instance.new('UITextSizeConstraint')
 	UITextSizeConstraint_2.Parent = GameLabel
 	UITextSizeConstraint_2.MaxTextSize = 16
 
-	local StatusLabel = Instance.new("TextLabel")
+	local StatusLabel = Instance.new('TextLabel')
 	StatusLabel.Parent = ProfileContainer
 	StatusLabel.AnchorPoint = Vector2.new(0.5, 0.5)
 	StatusLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -273,7 +273,7 @@ function Library:Initialize()
 	StatusLabel.Position = UDim2.new(0.680000007, 0, 0.649999976, 0)
 	StatusLabel.Size = UDim2.new(0, 100, 0, 23)
 	StatusLabel.Font = Enum.Font.Nunito
-	StatusLabel.Text = "beta"
+	StatusLabel.Text = 'beta'
 	StatusLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 	StatusLabel.TextScaled = true
 	StatusLabel.TextSize = 16.000
@@ -281,11 +281,11 @@ function Library:Initialize()
 	StatusLabel.TextWrapped = true
 	StatusLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-	local UITextSizeConstraint_3 = Instance.new("UITextSizeConstraint")
+	local UITextSizeConstraint_3 = Instance.new('UITextSizeConstraint')
 	UITextSizeConstraint_3.Parent = StatusLabel
 	UITextSizeConstraint_3.MaxTextSize = 16
 
-	local Seperator_1 = Instance.new("Frame")
+	local Seperator_1 = Instance.new('Frame')
 	Seperator_1.Parent = ProfileContainer
 	Seperator_1.AnchorPoint = Vector2.new(0.5, 0.5)
 	Seperator_1.BackgroundColor3 = Color3.fromRGB(32, 45, 65)
@@ -295,11 +295,11 @@ function Library:Initialize()
 	Seperator_1.Position = UDim2.new(0.5, 0, 1, 0)
 	Seperator_1.Size = UDim2.new(0, 100, 0, 4)
 
-	local UICorner_3 = Instance.new("UICorner")
+	local UICorner_3 = Instance.new('UICorner')
 	UICorner_3.CornerRadius = UDim.new(0, 4)
 	UICorner_3.Parent = Seperator_1
 
-	local TabsContainer = Instance.new("Frame")
+	local TabsContainer = Instance.new('Frame')
 	TabsContainer.Parent = MainContainer
 	TabsContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	TabsContainer.BackgroundTransparency = 1.000
@@ -308,17 +308,17 @@ function Library:Initialize()
 	TabsContainer.Position = UDim2.new(0, 0, 0, 100)
 	TabsContainer.Size = UDim2.new(1, 0, 1, -100)
 	
-	local UIListLayout = Instance.new("UIListLayout")
+	local UIListLayout = Instance.new('UIListLayout')
 	UIListLayout.Parent = TabsContainer
 	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout.Padding = UDim.new(0, 15)
 
-	local UIPadding = Instance.new("UIPadding")
+	local UIPadding = Instance.new('UIPadding')
 	UIPadding.Parent = TabsContainer
 	UIPadding.PaddingTop = UDim.new(0, 25)
 	
-	local Seperator_2 = Instance.new("Frame")
+	local Seperator_2 = Instance.new('Frame')
 	Seperator_2.Parent = MainContainer
 	Seperator_2.AnchorPoint = Vector2.new(0.5, 0.5)
 	Seperator_2.BackgroundColor3 = Color3.fromRGB(32, 45, 65)
@@ -328,11 +328,11 @@ function Library:Initialize()
 	Seperator_2.Position = UDim2.new(1, -5, 0.550000012, 0)
 	Seperator_2.Size = UDim2.new(0, 4, 0, 150)
 
-	local UICorner_9 = Instance.new("UICorner")
+	local UICorner_9 = Instance.new('UICorner')
 	UICorner_9.CornerRadius = UDim.new(0, 4)
 	UICorner_9.Parent = Seperator_2
 	
-	local OtherContainer = Instance.new("Frame")
+	local OtherContainer = Instance.new('Frame')
 	OtherContainer.Parent = MainFrame
 	OtherContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	OtherContainer.BackgroundTransparency = 1.000
@@ -343,7 +343,7 @@ function Library:Initialize()
 
 	--
 	
-	local VisualFrame = Instance.new("Frame")
+	local VisualFrame = Instance.new('Frame')
 	VisualFrame.Parent = ScreenGui
 	VisualFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	VisualFrame.BackgroundTransparency = 1.000
@@ -352,7 +352,7 @@ function Library:Initialize()
 	VisualFrame.Size = UDim2.new(1, 0, 1, 0)
 	VisualFrame.Visible = true
 
-	local ArrayContainer = Instance.new("Frame")
+	local ArrayContainer = Instance.new('Frame')
 	ArrayContainer.Parent = VisualFrame
 	ArrayContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	ArrayContainer.BackgroundTransparency = 1.000
@@ -361,11 +361,11 @@ function Library:Initialize()
 	ArrayContainer.Position = UDim2.new(0, 15, 0, 28)
 	ArrayContainer.Size = UDim2.new(0.196470603, 0, 0.855223835, 0)
 
-	local UIListLayout_5 = Instance.new("UIListLayout")
+	local UIListLayout_5 = Instance.new('UIListLayout')
 	UIListLayout_5.Parent = ArrayContainer
 	UIListLayout_5.SortOrder = Enum.SortOrder.LayoutOrder
 
-	local Title = Instance.new("TextLabel")
+	local Title = Instance.new('TextLabel')
 	Title.Parent = ArrayContainer
 	Title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 	Title.BackgroundTransparency = 1.000
@@ -376,13 +376,13 @@ function Library:Initialize()
 	Title.Size = UDim2.new(1, 0, 0, 45)
 	Title.ZIndex = -1
 	Title.Font = Enum.Font.Nunito
-	Title.Text = "sigeon.pex"
+	Title.Text = 'sigeon.pex'
 	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Title.TextSize = 35.000
 	Title.TextWrapped = true
 	Title.TextXAlignment = Enum.TextXAlignment.Left
 	
-	local Logo = Instance.new("ImageLabel")
+	local Logo = Instance.new('ImageLabel')
 	Logo.Parent = VisualFrame
 	Logo.AnchorPoint = Vector2.new(0.5, 0.5)
 	Logo.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -391,13 +391,13 @@ function Library:Initialize()
 	Logo.BorderSizePixel = 0
 	Logo.Position = UDim2.new(0.930000007, 0, 0.879999995, 0)
 	Logo.Size = UDim2.new(0, 125, 0, 125)
-	Logo.Image = "rbxassetid://135318918544831"
+	Logo.Image = 'rbxassetid://135318918544831'
 	Logo.ScaleType = Enum.ScaleType.Crop
 	
 	local ArrayTable = {}
 	local function Insert_Array(name)
 		
-		local ArrayLabel = Instance.new("TextLabel")
+		local ArrayLabel = Instance.new('TextLabel')
 		ArrayLabel.Parent = ArrayContainer
 		ArrayLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 		ArrayLabel.BackgroundTransparency = 1.000
@@ -408,16 +408,16 @@ function Library:Initialize()
 		ArrayLabel.Size = UDim2.new(1, 0, 0, 25)
 		ArrayLabel.ZIndex = -1
 		ArrayLabel.Font = Enum.Font.Nunito
-		ArrayLabel.Text = " " .. string.lower(name)
+		ArrayLabel.Text = ' ' .. string.lower(name)
 		ArrayLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 		ArrayLabel.TextSize = 18.000
 		ArrayLabel.TextWrapped = true
 		ArrayLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 		local MaxWidth = ArrayContainer.AbsoluteSize.X
-		local TextSize = TextService:GetTextSize("  " .. name .. "  ", ArrayLabel.TextSize, ArrayLabel.Font, Vector2.new(MaxWidth, math.huge))
+		local TextSize = TextService:GetTextSize('  ' .. name .. '  ', ArrayLabel.TextSize, ArrayLabel.Font, Vector2.new(MaxWidth, math.huge))
 		local NewSize = UDim2.new(0, TextSize.X, 0, 20)
-		if name == "" then
+		if name == '' then
 			NewSize = UDim2.new(0, 0, 0, 0)
 		end
 		ArrayLabel.Size = NewSize
@@ -433,7 +433,7 @@ function Library:Initialize()
 		local MaxWidth = ArrayContainer.AbsoluteSize.X
 		table.sort(ArrayTable, function(a, b) return TextService:GetTextSize(a.Text, a.TextSize, a.Font, Vector2.new(MaxWidth, math.huge)).X > game.TextService:GetTextSize(b.Text, b.TextSize, b.Font, Vector2.new(MaxWidth, math.huge)).X end)
 		for i, v in ipairs(ArrayTable) do
-			if v.Text == " " .. string.lower(name) then
+			if v.Text == ' ' .. string.lower(name) then
 				v:Destroy()
 				table.remove(ArrayTable, i)
 			end
@@ -445,7 +445,7 @@ function Library:Initialize()
 	
 	function Core:CreateNotification(title, desc, dur)
 		
-		local Notification = Instance.new("Frame")
+		local Notification = Instance.new('Frame')
 		Notification.Parent = VisualFrame
 		Notification.AnchorPoint = Vector2.new(0.5, 0.5)
 		Notification.BackgroundColor3 = Color3.fromRGB(24, 34, 48)
@@ -454,11 +454,11 @@ function Library:Initialize()
 		Notification.Size = UDim2.new(0, 200, 0, 60)
 		CreateStroke(Notification)
 
-		local UICorner_23232 = Instance.new("UICorner")
+		local UICorner_23232 = Instance.new('UICorner')
 		UICorner_23232.CornerRadius = UDim.new(0, 4)
 		UICorner_23232.Parent = Notification
 		
-		local TextLabel42121 = Instance.new("TextLabel")
+		local TextLabel42121 = Instance.new('TextLabel')
 		TextLabel42121.Parent = Notification
 		TextLabel42121.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		TextLabel42121.BackgroundTransparency = 1.000
@@ -474,11 +474,11 @@ function Library:Initialize()
 		TextLabel42121.TextWrapped = true
 		TextLabel42121.TextXAlignment = Enum.TextXAlignment.Left
 		
-		local UITextSizeConstraint_111111 = Instance.new("UITextSizeConstraint")
+		local UITextSizeConstraint_111111 = Instance.new('UITextSizeConstraint')
 		UITextSizeConstraint_111111.Parent = TextLabel42121
 		UITextSizeConstraint_111111.MaxTextSize = 20
 	
-		local TextLabel_25555 = Instance.new("TextLabel")
+		local TextLabel_25555 = Instance.new('TextLabel')
 		TextLabel_25555.Parent = Notification
 		TextLabel_25555.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		TextLabel_25555.BackgroundTransparency = 1.000
@@ -495,7 +495,7 @@ function Library:Initialize()
 		TextLabel_25555.TextXAlignment = Enum.TextXAlignment.Left
 		TextLabel_25555.TextYAlignment = Enum.TextYAlignment.Top
 		
-		local UITextSizeConstraint_11112 = Instance.new("UITextSizeConstraint")
+		local UITextSizeConstraint_11112 = Instance.new('UITextSizeConstraint')
 		UITextSizeConstraint_11112.Parent = TextLabel_25555
 		UITextSizeConstraint_11112.MaxTextSize = 14
 		
@@ -550,7 +550,7 @@ function Library:Initialize()
 	function Core:CreateSection(types, offsets)
 		local Sections = {}
 		
-		local TextButton = Instance.new("TextButton")
+		local TextButton = Instance.new('TextButton')
 		TextButton.Parent = TabsContainer
 		TextButton.BackgroundColor3 = Color3.fromRGB(25, 35, 50)
 		TextButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -559,13 +559,13 @@ function Library:Initialize()
 		TextButton.Size = UDim2.new(0, 150, 0, 40)
 		TextButton.AutoButtonColor = false
 		TextButton.Font = Enum.Font.Nunito
-		TextButton.Text = ""
+		TextButton.Text = ''
 		TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 		TextButton.TextScaled = true
 		TextButton.TextSize = 18.000
 		TextButton.TextWrapped = true
 
-		local ImageButton = Instance.new("ImageButton")
+		local ImageButton = Instance.new('ImageButton')
 		ImageButton.Parent = TextButton
 		ImageButton.AnchorPoint = Vector2.new(0.5, 0.5)
 		ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -574,9 +574,9 @@ function Library:Initialize()
 		ImageButton.BorderSizePixel = 0
 		ImageButton.Position = UDim2.new(0.150000006, 0, 0.5, 0)
 		ImageButton.Size = UDim2.new(0, 20, 0, 20)
-		ImageButton.Image = "rbxassetid://10734943902"
+		ImageButton.Image = 'rbxassetid://10734943902'
 
-		local TextLabel = Instance.new("TextLabel")
+		local TextLabel = Instance.new('TextLabel')
 		TextLabel.Parent = TextButton
 		TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		TextLabel.BackgroundTransparency = 1.000
@@ -585,21 +585,21 @@ function Library:Initialize()
 		TextLabel.Position = UDim2.new(0, 50, 0, 0)
 		TextLabel.Size = UDim2.new(1, -50, 1, 0)
 		TextLabel.Font = Enum.Font.SourceSans
-		TextLabel.Text = "Combat"
+		TextLabel.Text = 'Combat'
 		TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 		TextLabel.TextScaled = true
 		TextLabel.TextSize = 18.000
 		TextLabel.TextWrapped = true
 		TextLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-		local UITextSizeConstraint_4 = Instance.new("UITextSizeConstraint")
+		local UITextSizeConstraint_4 = Instance.new('UITextSizeConstraint')
 		UITextSizeConstraint_4.Parent = TextLabel
 		UITextSizeConstraint_4.MaxTextSize = 18
 		
-		local UICorner_4 = Instance.new("UICorner")
+		local UICorner_4 = Instance.new('UICorner')
 		UICorner_4.Parent = TextButton
 		
-		local ModulesContainer = Instance.new("ScrollingFrame")
+		local ModulesContainer = Instance.new('ScrollingFrame')
 		ModulesContainer.Parent = OtherContainer
 		ModulesContainer.Active = true
 		ModulesContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -611,12 +611,12 @@ function Library:Initialize()
 		ModulesContainer.Visible = false
 		ModulesContainer.CanvasSize = offsets or UDim2.new(0, 0, 3, 90)
 		--3, 90
-		local UIPadding_2 = Instance.new("UIPadding")
+		local UIPadding_2 = Instance.new('UIPadding')
 		UIPadding_2.Parent = ModulesContainer
 		UIPadding_2.PaddingLeft = UDim.new(0, 15)
 		UIPadding_2.PaddingTop = UDim.new(0, 15)
 		
-		local UIListLayout_2 = Instance.new("UIListLayout")
+		local UIListLayout_2 = Instance.new('UIListLayout')
 		UIListLayout_2.Parent = ModulesContainer
 		UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
 		UIListLayout_2.Padding = UDim.new(0, 15)
@@ -625,32 +625,32 @@ function Library:Initialize()
 		--
 		
 		if types == 1 then
-			ImageButton.Image = "rbxassetid://10734943902"
-			TextLabel.Text = "Combat"
+			ImageButton.Image = 'rbxassetid://10734943902'
+			TextLabel.Text = 'Combat'
 		elseif types == 2 then
-			ImageButton.Image = "rbxassetid://10723354671"
-			TextLabel.Text = "Movement"
+			ImageButton.Image = 'rbxassetid://10723354671'
+			TextLabel.Text = 'Movement'
 		elseif types == 3 then
-			ImageButton.Image = "rbxassetid://10709782497"
-			TextLabel.Text = "Visual"
+			ImageButton.Image = 'rbxassetid://10709782497'
+			TextLabel.Text = 'Visual'
 		elseif types == 4 then
-			ImageButton.Image = "rbxassetid://10734897956"
-			TextLabel.Text = "World"
+			ImageButton.Image = 'rbxassetid://10734897956'
+			TextLabel.Text = 'World'
 		elseif types == 5 then
-			ImageButton.Image = "rbxassetid://10734910187"
-			TextLabel.Text = "Miscellaneous"
+			ImageButton.Image = 'rbxassetid://10734910187'
+			TextLabel.Text = 'Miscellaneous'
 		end
 		
 		--
 		
 		ImageButton.MouseButton1Click:Connect(function()
 			for _, v in pairs(OtherContainer:GetChildren()) do
-				if v:IsA("ScrollingFrame") then
+				if v:IsA('ScrollingFrame') then
 					v.Visible = false
 				end
 			end
 			for _, v in pairs(TabsContainer:GetDescendants()) do
-				if v:IsA("UIStroke") then 
+				if v:IsA('UIStroke') then 
 					v:Destroy() 
 				end
 			end
@@ -660,12 +660,12 @@ function Library:Initialize()
 		
 		TextButton.MouseButton1Click:Connect(function()
 			for _, v in pairs(OtherContainer:GetChildren()) do
-				if v:IsA("ScrollingFrame") then
+				if v:IsA('ScrollingFrame') then
 					v.Visible = false
 				end
 			end
 			for _, v in pairs(TabsContainer:GetDescendants()) do
-				if v:IsA("UIStroke") then 
+				if v:IsA('UIStroke') then 
 					v:Destroy() 
 				end
 			end
@@ -677,7 +677,7 @@ function Library:Initialize()
 			ToggleButton = {
 				Name = ToggleButton.Name,
 				Enabled = ToggleButton.Enabled or false,
-				Keybind = ToggleButton.Keybind or "Euro",
+				Keybind = ToggleButton.Keybind or 'Euro',
 				AutoDisable = ToggleButton.AutoDisable or false,
 				Callback = ToggleButton.Callback or function() end,
 			}
@@ -685,18 +685,18 @@ function Library:Initialize()
 
 			ToggleButton.Enabled = Enabled
 			ToggleButton.Keybind = Keybind
-			local ToggleHolder = Instance.new("Frame")
+			local ToggleHolder = Instance.new('Frame')
 			ToggleHolder.Parent = ModulesContainer
 			ToggleHolder.Transparency = 1.000
 			ToggleHolder.Size = UDim2.new(0, 200, 0, 40)
 			
-			local UIListLayout_55 = Instance.new("UIListLayout")
+			local UIListLayout_55 = Instance.new('UIListLayout')
 			UIListLayout_55.Parent = ToggleHolder
 			UIListLayout_55.SortOrder = Enum.SortOrder.LayoutOrder
 			UIListLayout_55.Padding = UDim.new(0, 10)
 			--UIListLayout_55.Wraps = true
 			
-			local ToggleMain = Instance.new("TextButton")
+			local ToggleMain = Instance.new('TextButton')
 			ToggleMain.Parent = ToggleHolder
 			ToggleMain.BackgroundColor3 = Color3.fromRGB(25, 35, 50)
 			ToggleMain.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -705,15 +705,15 @@ function Library:Initialize()
 			ToggleMain.Size = UDim2.new(0, 200, 0, 40)
 			ToggleMain.AutoButtonColor = false
 			ToggleMain.Font = Enum.Font.Nunito
-			ToggleMain.Text = ""
+			ToggleMain.Text = ''
 			ToggleMain.TextColor3 = Color3.fromRGB(255, 255, 255)
 			ToggleMain.TextScaled = true
 			ToggleMain.TextSize = 18.000
 			ToggleMain.TextWrapped = true
 			CreateStroke(ToggleMain, Color3.fromRGB(45, 65, 95), 1.5, 0.5)
-			local ToggleStroke = ToggleMain:FindFirstChildOfClass("UIStroke")
+			local ToggleStroke = ToggleMain:FindFirstChildOfClass('UIStroke')
 
-			local TextLabel_6 = Instance.new("TextLabel")
+			local TextLabel_6 = Instance.new('TextLabel')
 			TextLabel_6.Parent = ToggleMain
 			TextLabel_6.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 			TextLabel_6.BackgroundTransparency = 1.000
@@ -729,14 +729,14 @@ function Library:Initialize()
 			TextLabel_6.TextWrapped = true
 			TextLabel_6.TextXAlignment = Enum.TextXAlignment.Left
 			
-			local UITextSizeConstraint_9 = Instance.new("UITextSizeConstraint")
+			local UITextSizeConstraint_9 = Instance.new('UITextSizeConstraint')
 			UITextSizeConstraint_9.Parent = TextLabel_6
 			UITextSizeConstraint_9.MaxTextSize = 18
 
-			local UICorner_10 = Instance.new("UICorner")
+			local UICorner_10 = Instance.new('UICorner')
 			UICorner_10.Parent = ToggleMain
 
-			local TextBox = Instance.new("TextBox")
+			local TextBox = Instance.new('TextBox')
 			TextBox.Parent = ToggleMain
 			TextBox.AnchorPoint = Vector2.new(0.5, 0.5)
 			TextBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -747,27 +747,27 @@ function Library:Initialize()
 			TextBox.Size = UDim2.new(0, 20, 0, 20)
 			TextBox.Font = Enum.Font.SourceSans
 			TextBox.PlaceholderColor3 = Color3.fromRGB(150, 150, 150)
-			TextBox.PlaceholderText = "-"
-			TextBox.Text = ""
+			TextBox.PlaceholderText = '-'
+			TextBox.Text = ''
 			TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 			TextBox.TextScaled = true
 			TextBox.TextSize = 14.000
 			TextBox.TextWrapped = true
 			CreateStroke(TextBox, Color3.fromRGB(45, 65, 95), 1.5, 0.5)
 			
-			local UICorner_11 = Instance.new("UICorner")
+			local UICorner_11 = Instance.new('UICorner')
 			UICorner_11.CornerRadius = UDim.new(0, 4)
 			UICorner_11.Parent = TextBox
 
-			local UITextSizeConstraint_10 = Instance.new("UITextSizeConstraint")
+			local UITextSizeConstraint_10 = Instance.new('UITextSizeConstraint')
 			UITextSizeConstraint_10.Parent = TextBox
 			UITextSizeConstraint_10.MaxTextSize = 14
-			if ToggleButton.Keybind and ToggleButton.Keybind ~= "Euro" then
+			if ToggleButton.Keybind and ToggleButton.Keybind ~= 'Euro' then
     			TextBox.Text = ToggleButton.Keybind
-    			TextBox.PlaceholderText = ""
+    			TextBox.PlaceholderText = ''
 			end
 			
-			local MenuContainer = Instance.new("Frame")
+			local MenuContainer = Instance.new('Frame')
 			MenuContainer.Parent = ToggleHolder
 			MenuContainer.BackgroundColor3 = Color3.fromRGB(24, 34, 48)
 			MenuContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -775,11 +775,11 @@ function Library:Initialize()
 			MenuContainer.Size = UDim2.new(0, 200, 0, 105)
 			
 			CreateStroke(MenuContainer, Color3.fromRGB(45, 65, 95), 1.5, 0.5)
-			local MenuStoke = MenuContainer:FindFirstChildOfClass("UIStroke")
+			local MenuStoke = MenuContainer:FindFirstChildOfClass('UIStroke')
 			
 			local Connection1
 			Start(function()
-				Connection1 = MainFrame:GetPropertyChangedSignal("Visible"):Connect(function()
+				Connection1 = MainFrame:GetPropertyChangedSignal('Visible'):Connect(function()
 					if MainFrame.Visible and MenuContainer then
 						MenuContainer.Size = TotalY(MenuContainer)
 						ToggleHolder.Size = TotalY(MenuContainer)
@@ -787,19 +787,19 @@ function Library:Initialize()
 				end)
 			end)
 			
-			local UICorner_12 = Instance.new("UICorner")
+			local UICorner_12 = Instance.new('UICorner')
 			UICorner_12.CornerRadius = UDim.new(0, 4)
 			UICorner_12.Parent = MenuContainer
 			
-			local UIListLayout_3 = Instance.new("UIListLayout")
+			local UIListLayout_3 = Instance.new('UIListLayout')
 			UIListLayout_3.Parent = MenuContainer
 			UIListLayout_3.SortOrder = Enum.SortOrder.LayoutOrder
 
-			local UIPadding_3 = Instance.new("UIPadding")
+			local UIPadding_3 = Instance.new('UIPadding')
 			UIPadding_3.Parent = MenuContainer
 			UIPadding_3.PaddingTop = UDim.new(0, 5)
 			
-			local Frame_69 = Instance.new("Frame")
+			local Frame_69 = Instance.new('Frame')
 			Frame_69.Parent = ModulesContainer
 			Frame_69.BackgroundTransparency = 1.000
 			Frame_69.Size = UDim2.new(0, 200, 0, 30)
@@ -841,14 +841,14 @@ function Library:Initialize()
 				if Input.UserInputType == Enum.UserInputType.Keyboard then
 					if TextBox:IsFocused() then
 						ToggleButton.Keybind = Input.KeyCode.Name
-						TextBox.PlaceholderText = ""
+						TextBox.PlaceholderText = ''
 						TextBox.Text = Input.KeyCode.Name
 						TextBox:ReleaseFocus()
 						ConfigTable.Modules[ToggleButton.Name].Keybind = ToggleButton.Keybind
-					elseif ToggleButton.Keybind == "Backspace" then
-						ToggleButton.Keybind = "Euro"
-						TextBox.Text = ""
-						TextBox.PlaceholderText = "-"
+					elseif ToggleButton.Keybind == 'Backspace' then
+						ToggleButton.Keybind = 'Euro'
+						TextBox.Text = ''
+						TextBox.PlaceholderText = '-'
 						TextBox:ReleaseFocus()
 						ConfigTable.Modules[ToggleButton.Name].Keybind = ToggleButton.Keybind
 					end       
@@ -920,7 +920,7 @@ function Library:Initialize()
     				Dropdown.Default = ConfigTable.Modules[ToggleButton.Name].Dropdowns[Dropdown.Name]
 				end
 				
-				local Frame_4 = Instance.new("Frame")
+				local Frame_4 = Instance.new('Frame')
 				Frame_4.Parent = MenuContainer
 				Frame_4.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 				Frame_4.BackgroundTransparency = 1.000
@@ -928,7 +928,7 @@ function Library:Initialize()
 				Frame_4.BorderSizePixel = 0
 				Frame_4.Size = UDim2.new(1, 0, 0, 28)
 
-				local TextLabel_9 = Instance.new("TextLabel")
+				local TextLabel_9 = Instance.new('TextLabel')
 				TextLabel_9.Parent = Frame_4
 				TextLabel_9.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 				TextLabel_9.BackgroundTransparency = 1.000
@@ -943,7 +943,7 @@ function Library:Initialize()
 				TextLabel_9.TextWrapped = true
 				TextLabel_9.TextXAlignment = Enum.TextXAlignment.Left
 
-				local TextButton_8 = Instance.new("TextButton")
+				local TextButton_8 = Instance.new('TextButton')
 				TextButton_8.Parent = Frame_4
 				TextButton_8.AnchorPoint = Vector2.new(0.5, 0.5)
 				TextButton_8.BackgroundTransparency = 1.000
@@ -960,11 +960,11 @@ function Library:Initialize()
 				TextButton_8.TextWrapped = true
 				CreateStroke(TextButton_8, Color3.fromRGB(45, 65, 95), 1.5, 0.5)
 				
-				local UICorner_14 = Instance.new("UICorner")
+				local UICorner_14 = Instance.new('UICorner')
 				UICorner_14.CornerRadius = UDim.new(0, 4)
 				UICorner_14.Parent = TextButton_8
 
-				local Frame_5 = Instance.new("Frame")
+				local Frame_5 = Instance.new('Frame')
 				Frame_5.Parent = TextButton_8
 				Frame_5.BackgroundColor3 = Color3.fromRGB(24, 34, 48)
 				Frame_5.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -976,19 +976,19 @@ function Library:Initialize()
 				CreateStroke(Frame_5, Color3.fromRGB(45, 65, 95), 1.5, 0.5)
 				
 				Start(function()
-					Frame_5:GetPropertyChangedSignal("Visible"):Connect(function()
+					Frame_5:GetPropertyChangedSignal('Visible'):Connect(function()
 						if Frame_5.Visible then
 							Frame_5.Size = TotalY(Frame_5)
 						end
 					end)
 				end)
 				
-				local UIListLayout_4 = Instance.new("UIListLayout")
+				local UIListLayout_4 = Instance.new('UIListLayout')
 				UIListLayout_4.Parent = Frame_5
 				UIListLayout_4.SortOrder = Enum.SortOrder.LayoutOrder
 				
 				for _, v in ipairs(Dropdown.List) do
-					local TextButton_9 = Instance.new("TextButton")
+					local TextButton_9 = Instance.new('TextButton')
 					TextButton_9.Parent = Frame_5
 					TextButton_9.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 					TextButton_9.BackgroundTransparency = 1.000
@@ -1004,7 +1004,7 @@ function Library:Initialize()
 					TextButton_9.Text = v
 					TextButton_9.ZIndex = 3
 					
-					local UITextSizeConstraint_11 = Instance.new("UITextSizeConstraint")
+					local UITextSizeConstraint_11 = Instance.new('UITextSizeConstraint')
 					UITextSizeConstraint_11.Parent = TextButton_9
 					UITextSizeConstraint_11.MaxTextSize = 14
 
@@ -1044,7 +1044,7 @@ function Library:Initialize()
 				end
 				
 				local Dragged, Value = false, nil
-				local Frame = Instance.new("Frame")
+				local Frame = Instance.new('Frame')
 				Frame.Parent = MenuContainer
 				Frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 				Frame.BackgroundTransparency = 1.000
@@ -1052,7 +1052,7 @@ function Library:Initialize()
 				Frame.BorderSizePixel = 0
 				Frame.Size = UDim2.new(1, 0, 0, 38)
 
-				local TextLabel_7 = Instance.new("TextLabel")
+				local TextLabel_7 = Instance.new('TextLabel')
 				TextLabel_7.Parent = Frame
 				TextLabel_7.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 				TextLabel_7.BackgroundTransparency = 1.000
@@ -1067,7 +1067,7 @@ function Library:Initialize()
 				TextLabel_7.TextWrapped = true
 				TextLabel_7.TextXAlignment = Enum.TextXAlignment.Left
 
-				local TextBox_2 = Instance.new("TextBox")
+				local TextBox_2 = Instance.new('TextBox')
 				TextBox_2.Parent = Frame
 				TextBox_2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 				TextBox_2.BackgroundTransparency = 1.000
@@ -1076,17 +1076,17 @@ function Library:Initialize()
 				TextBox_2.Position = UDim2.new(0, 110, 0, 5)
 				TextBox_2.Size = UDim2.new(0, 80, 0, 15)
 				TextBox_2.Font = Enum.Font.SourceSans
-				TextBox_2.Text = "50"
+				TextBox_2.Text = '50'
 				TextBox_2.TextColor3 = Color3.fromRGB(255, 255, 255)
 				TextBox_2.TextSize = 18.000
 				TextBox_2.TextWrapped = true
 				TextBox_2.TextXAlignment = Enum.TextXAlignment.Right
 				
-				local UITextSizeConstraint_69 = Instance.new("UITextSizeConstraint")
+				local UITextSizeConstraint_69 = Instance.new('UITextSizeConstraint')
 				UITextSizeConstraint_69.Parent = TextBox_2
 				UITextSizeConstraint_69.MaxTextSize = 18
 				
-				local TextButton_6 = Instance.new("TextButton")
+				local TextButton_6 = Instance.new('TextButton')
 				TextButton_6.Parent = Frame
 				TextButton_6.BackgroundColor3 = Color3.fromRGB(22, 31, 44)
 				TextButton_6.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -1094,10 +1094,10 @@ function Library:Initialize()
 				TextButton_6.Position = UDim2.new(0, 8, 0, 28)
 				TextButton_6.Size = UDim2.new(0, 181, 0, 8)
 				TextButton_6.AutoButtonColor = false
-				TextButton_6.Text = ""
+				TextButton_6.Text = ''
 				TextButton_6.TextColor3 = Color3.fromRGB(27, 42, 53)
 				
-				local Frame_2 = Instance.new("Frame")
+				local Frame_2 = Instance.new('Frame')
 				Frame_2.Parent = TextButton_6
 				Frame_2.BackgroundColor3 = Color3.fromRGB(45, 65, 95)
 				Frame_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -1176,7 +1176,7 @@ function Library:Initialize()
 					MiniToggle.Enabled = ConfigTable.Modules[ToggleButton.Name].MiniToggles[MiniToggle.Name]
 				end
 				
-				local Frame_3 = Instance.new("Frame")
+				local Frame_3 = Instance.new('Frame')
 				Frame_3.Parent = MenuContainer
 				Frame_3.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 				Frame_3.BackgroundTransparency = 1.000
@@ -1184,7 +1184,7 @@ function Library:Initialize()
 				Frame_3.BorderSizePixel = 0
 				Frame_3.Size = UDim2.new(1, 0, 0, 28)
 
-				local TextLabel_8 = Instance.new("TextLabel")
+				local TextLabel_8 = Instance.new('TextLabel')
 				TextLabel_8.Parent = Frame_3
 				TextLabel_8.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 				TextLabel_8.BackgroundTransparency = 1.000
@@ -1199,7 +1199,7 @@ function Library:Initialize()
 				TextLabel_8.TextWrapped = true
 				TextLabel_8.TextXAlignment = Enum.TextXAlignment.Left
 				
-				local TextButton_7 = Instance.new("TextButton")
+				local TextButton_7 = Instance.new('TextButton')
 				TextButton_7.Parent = Frame_3
 				TextButton_7.AnchorPoint = Vector2.new(0.5, 0.5)
 				TextButton_7.BackgroundColor3 = Color3.fromRGB(22, 31, 44)
@@ -1209,14 +1209,14 @@ function Library:Initialize()
 				TextButton_7.Size = UDim2.new(0, 18, 0, 18)
 				TextButton_7.AutoButtonColor = false
 				TextButton_7.Font = Enum.Font.SourceSans
-				TextButton_7.Text = ""
+				TextButton_7.Text = ''
 				TextButton_7.TextColor3 = Color3.fromRGB(255, 255, 255)
 				TextButton_7.TextScaled = true
 				TextButton_7.TextSize = 18.000
 				TextButton_7.TextTransparency = 1.000
 				TextButton_7.TextWrapped = true
 	
-				local UICorner_13 = Instance.new("UICorner")
+				local UICorner_13 = Instance.new('UICorner')
 				UICorner_13.CornerRadius = UDim.new(0, 4)
 				UICorner_13.Parent = TextButton_7
 				

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" width="200" />
+  <img src="assets/logo.png" width="200" />
 </p>
 
 ## sigeon.beta
@@ -8,6 +8,7 @@ sigeon.beta is a specialized script developed by sigeon.pex corporation, current
 #### Games
 - Bridge Duel
 - Bed Fight
+- Bedwars
   
 #### Script
 ```luau
