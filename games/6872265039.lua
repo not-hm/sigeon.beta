@@ -4,7 +4,7 @@ local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/not-h
 local Utility = loadstring(game:HttpGet('https://raw.githubusercontent.com/not-hm/sigeon.beta/refs/heads/main/libraries/universal.lua'))()
 local Bedwars = loadstring(game:HttpGet('https://raw.githubusercontent.com/not-hm/sigeon.beta/refs/heads/main/libraries/bedwars.lua'))()
 local cloneref = cloneref or function(obj) return obj end
-local hookfunction = hookfunction or function(func, callback) end
+local firesignal = firesignal or function(obj) return obj end
 
 local ReplicatedStorage = cloneref(game:GetService('ReplicatedStorage'))
 local UserInputService = cloneref(game:GetService('UserInputService'))
@@ -161,27 +161,6 @@ task.defer(function()
 		Default = 8,
 		Callback = function(callback)
 			MinCPS = callback
-		end
-	})
-end)
-
-local MotionReset
-task.defer(function()
-	local OldFunc
-
-	MotionReset = Sections.Combat:CreateToggle({
-		Name = 'Motion Reset',
-		Callback = function(callback)
-			if callback then
-                OldFunc = hookfunction(Bedwars.GetModule('knockback-util').applyKnockback, function(...)
-                    LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState(Enum.HumanoidStateType.Jumping)
-					LocalPlayer.Character:FindFirstChildOfClass('Humanoid').Jump = true
-                    return OldFunc(...)
-                end)
-			else
-                hookfunction(Bedwars.GetModule('knockback-util').applyKnockback, OldFunc)
-                OldFunc = nil
-			end
 		end
 	})
 end)
@@ -345,6 +324,40 @@ task.defer(function()
 		Callback = function(value)
 			Knockback.Y = value
             Bedwars.GetModule('knockback-util').KnockbackConstants.kbUpwardStrength = Original.Y * (Knockback.Y / 100)
+		end
+	})
+end)
+
+local Stealer
+task.defer(function()
+	local Stealing = false --// no idae if this would work prolly yes
+
+	Stealer = Sections.World:CreateToggle({
+		Name = 'Stealer',
+		Callback = function(callback)
+			if callback then
+				Stealing = false
+				Utility.Misc.Events.Add('Stepped', 'Stealer', nil, function()
+					if not Utility.Entity.IsAlive(LocalPlayer) then return end
+					local ChestApp = LocalPlayer.PlayerGui:FindFirstChild('ChestApp')
+					if not ChestApp then return end
+					local ChestContainer = ChestApp['2']['1']['3']['2']['4']['1']
+					if not ChestContainer then return end
+					for _, v in ChestContainer:GetDescendants() do
+						if v:IsA('Frame') and v.Name == 'TooltipInterest' and v.Parent:IsA('ImageButton') then
+							if not Stealing then
+								Stealing = true
+								firesignal(v.Parent.MouseButton1Click)
+								task.wait(math.random(20, 40) / 100)
+								Stealing = false
+							end
+						end
+					end
+				end)
+			else
+				Utility.Misc.Events.Remove('Stepped', 'Stealer')
+				Stealing = false
+			end
 		end
 	})
 end)
