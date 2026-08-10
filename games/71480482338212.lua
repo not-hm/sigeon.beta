@@ -15,6 +15,7 @@ local Teams = cloneref(game:GetService('Teams'))
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local BedFight = {}
+local AntiBot
 
 local SwordHandler, BlockHandler
 local LastSword, LastBlock
@@ -176,7 +177,7 @@ task.defer(function()
 					if not Utility.Entity.GetPerspective() then return end
 					if BedFight.Functions.Utility.GetUI() then return end
 					if UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
-						local Entity = Utility.Entity.Get.Distance(Distances, 'Angle', (LocalPlayer.Team ~= Teams.Spectators), true, 120)
+						local Entity = Utility.Entity.Get.Distance(Distances, 'Angle', AntiBot.Enabled, (LocalPlayer.Team ~= Teams.Spectators), true, 120)
 						if Entity then
 							if ToolCheck and not BedFight.Functions.Inventory.Character.Find('sword') then return end
 							local FinalPos = Entity.Character.PrimaryPart.Position + (Entity.Character.PrimaryPart.AssemblyLinearVelocity * Prediction)
@@ -308,7 +309,7 @@ task.defer(function()
 					if BedFight.Functions.Utility.GetUI() then return end
 					local Tool = BedFight.Functions.Inventory.Character.Get()
 					if not Tool then BedFight.Functions.Tool.Reset() return end
-					local Entity = 	Utility.Entity.Get.Distance(18, 'Angle', (LocalPlayer.Team ~= Teams.Spectators), true, Direction)
+					local Entity = 	Utility.Entity.Get.Distance(18, 'Angle', AntiBot.Enabled, (LocalPlayer.Team ~= Teams.Spectators), true, Direction)
 					if not Entity then return end
 					local Distance = Utility.Entity.GetMagnitude(Entity.Character.PrimaryPart.Position, LocalPlayer.Character.PrimaryPart.Position)
 					local Class = BedFight.Functions.Tool.GetClass(Tool)
@@ -418,7 +419,7 @@ task.defer(function()
 				Utility.Misc.Events.Add('Stepped', 'TriggerBot', nil, function()
 					if not Utility.Entity.IsAlive(LocalPlayer) then return end
 					if BedFight.Functions.Utility.GetUI() then return end
-					local Entity = Utility.Entity.Get.Distance(Distance, 'Angle', (LocalPlayer.Team ~= Teams.Spectators), true, 120)
+					local Entity = Utility.Entity.Get.Distance(Distance, 'Angle', AntiBot.Enabled, (LocalPlayer.Team ~= Teams.Spectators), true, 120)
 					if Entity and Mouse.Target and Mouse.Target:IsDescendantOf(Entity) then
 						local Tool = BedFight.Functions.Inventory.Character.Get()
 						if not Tool then BedFight.Functions.Tool.Reset() return end
@@ -724,7 +725,7 @@ task.defer(function()
 			if callback then
 				Original = hookfunction(BedFight.ToolHandlers.Ranged.UpdateBeam, newcclosure(function(self, origin, data)
 					Original(self, origin, data)
-					local Entity = Utility.Entity.Get.Mouse(1000, 180, (LocalPlayer.Team ~= Teams.Spectators), true)
+					local Entity = Utility.Entity.Get.Mouse(1000, 180, AntiBot.Enabled, (LocalPlayer.Team ~= Teams.Spectators), true)
 					if Entity and self.TrajectoryData then
 						local MaxSpeed = data.Speed.Max
 						local Predicted = Utility.Entity.GetPrediction(Entity.Character.PrimaryPart, origin.Position, MaxSpeed)
@@ -897,6 +898,14 @@ task.defer(function()
 				LocalPlayer.Kit.Value = New
 			end
 		end,
+	})
+end)
+
+task.defer(function()
+	AntiBot = Sections.Misc:CreateToggle({
+		Name = 'Anti Bot',
+		Callback = function(callback)
+		end
 	})
 end)
 

@@ -21,7 +21,7 @@ local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local BridgeDuel = {}
 
-local Team
+local Team, AntiBot
 local Crosshair, FakeCrosshair = nil, nil
 task.defer(function()
 	BridgeDuel = {
@@ -133,7 +133,7 @@ task.defer(function()
 					if not Utility.Entity.GetPerspective() then return end
 					if BridgeDuel.Functions.Utility.GetUI() then return end
 					if UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
-						local Entity = Utility.Entity.Get.Distance(Distances, 'Angle', Team.Enabled, true, 120)
+						local Entity = Utility.Entity.Get.Distance(Distances, 'Angle', AntiBot.Enabled, Team.Enabled, true, 120)
 						if Entity then
 							if ToolCheck and not Utility.Entity.Inventory.Character.Find('sword') then return end
 							local FinalPos = Entity.Character.PrimaryPart.Position + (Entity.Character.PrimaryPart.AssemblyLinearVelocity * Prediction)
@@ -288,7 +288,7 @@ task.defer(function()
 					end
 					local Tool = Utility.Entity.Inventory.Character.Find('sword')
 					if not Tool then return end
-					local Entity = Utility.Entity.Get.Distance(24, 'Angle', Team.Enabled, true, 120)
+					local Entity = Utility.Entity.Get.Distance(24, 'Angle', AntiBot.Enabled, Team.Enabled, true, 120)
 					if not Entity then
 						Crosshair.Position = FakeCrosshair.Position
 						return
@@ -340,7 +340,7 @@ task.defer(function()
 				Utility.Misc.Events.Add('Stepped', 'TriggerBot', nil, function()
 					if not Utility.Entity.IsAlive(LocalPlayer) then return end
 					if BridgeDuel.Functions.Utility.GetUI() then return end
-					local Entity = Utility.Entity.Get.Distance(Distance, 'Angle', Team.Enabled, true, 120)
+					local Entity = Utility.Entity.Get.Distance(Distance, 'Angle', AntiBot.Enabled, Team.Enabled, true, 120)
 					if Entity and Mouse.Target and Mouse.Target:IsDescendantOf(Entity) then
 						local Tool = Utility.Entity.Inventory.Character.Find('sword')
 						if not Tool then return end
@@ -852,7 +852,7 @@ task.defer(function()
 						Crosshair.Position = FakeCrosshair.Position
 						return
 					end
-					local Entity = Utility.Entity.Get.Mouse(1000, 180, true, true)
+					local Entity = Utility.Entity.Get.Mouse(1000, 180, AntiBot.Enabled, true, true)
 					if Entity and Entity.Character and Entity.Character.PrimaryPart then
 						local Origin = (workspace.CurrentCamera:ScreenPointToRay(workspace.CurrentCamera.ViewportSize.X / 2, FakeCrosshair.AbsolutePosition.Y)).Origin
 						local Charge = math.clamp(tick() - ChargeTime, 0, 0.7)
@@ -1049,6 +1049,14 @@ end)
 task.defer(function()
 	Team = Sections.Misc:CreateToggle({
 		Name = 'Team',
+		Callback = function(callback)
+		end
+	})
+end)
+
+task.defer(function()
+	AntiBot = Sections.Misc:CreateToggle({
+		Name = 'Anti Bot',
 		Callback = function(callback)
 		end
 	})

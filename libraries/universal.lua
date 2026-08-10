@@ -217,54 +217,64 @@ Utility.Entity = {
             end
         }
     },
-    Get = {
-        Distance = function(MaxDist, Mode, TeamCheck, WallCheck, Direction)
+    Get = { --// Thank you xylex for introducing me to this thing
+        Distance = function(MaxDist, Mode, PlayerCheck, TeamCheck, WallCheck, Direction)
             local Entity, MinDist = nil, math.huge
-	    	for _, v in Utility.Services.Players:GetPlayers() do
-    			if v ~= LocalPlayer and Utility.Entity.IsAlive(v) then
-				    if TeamCheck and Utility.Entity.GetTeam(v) then continue end
-                    if WallCheck and not Utility.Entity.HasLineOfSight(v) then continue end
+            for _, v in workspace:QueryDescendants('Model:has(> Humanoid)') do
+                local Player = Utility.Services.Players:FindFirstChild(v.Name)
+                if not PlayerCheck or Player then
+                    v = Player or v
+	        	    if v ~= LocalPlayer and Utility.Entity.IsAlive(v) then
+		    		    if TeamCheck and v:IsA('Player') and Utility.Entity.GetTeam(v) then continue end
+                        if WallCheck and v:IsA('Player') and not Utility.Entity.HasLineOfSight(v) then continue end
 
-			    	local Distance = (v.Character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position)
-	    			if Distance.Magnitude <= MaxDist then
-    					local Angle = math.deg(LocalPlayer.Character.PrimaryPart.CFrame.LookVector:Angle(Distance.Unit))
-					    if Direction and Direction < 360 then
-				    		if Angle > (Direction / 2) then continue end
-			    		end
-		    			local Selected
-	    				if Mode == 'Closest' then
-    						Selected = Distance.Magnitude
-					    elseif Mode == 'Lowest' then
-				    		Selected = v.Character:FindFirstChildOfClass('Humanoid').Health
-			    		elseif Mode == 'Angle' then
-		    				Selected = Angle
-	    				end
-    					if Selected and Selected < MinDist then
-				    		MinDist = Selected
-			    			Entity = v
-		    			end
-    				end
+			        	local Character = v:IsA('Player') and v.Character or v
+    			    	local Distance = (Character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position)
+	        			if Distance.Magnitude <= MaxDist then
+    	    				local Angle = math.deg(LocalPlayer.Character.PrimaryPart.CFrame.LookVector:Angle(Distance.Unit))
+			    		    if Direction and Direction < 360 then
+				        		if Angle > (Direction / 2) then continue end
+			    	    	end
+		    			    local Selected
+	    				    if Mode == 'Closest' then
+        						Selected = Distance.Magnitude
+	    				    elseif Mode == 'Lowest' then
+		    			    Selected = Character:FindFirstChildOfClass('Humanoid').Health
+			        		elseif Mode == 'Angle' then
+		    	    			Selected = Angle
+	    			    	end
+    					    if Selected and Selected < MinDist then
+    				    		MinDist = Selected
+	    		    			Entity = v
+    	        	    	end
+	    	        	end
+	    	        end
 	    		end
 		    end
 		    return Entity
         end,
-        Mouse = function(MaxDist, FOV, TeamCheck, WallCheck)
+        Mouse = function(MaxDist, FOV, PlayerCheck, TeamCheck, WallCheck)
 		    local Entity, MinDist = nil, math.huge
-		    for _, v in Utility.Services.Players:GetPlayers() do
-    			if v ~= LocalPlayer and Utility.Entity.IsAlive(v) then
-	    			if TeamCheck and Utility.Entity.GetTeam(v) then continue end
-		    		if WallCheck and not Utility.Entity.HasLineOfSight(v) then continue end
+            for _, v in workspace:QueryDescendants('Model:has(> Humanoid)') do
+                local Player = Utility.Services.Players:FindFirstChild(v.Name)
+	    	    if not PlayerCheck or Player then
+                    v = Player or v
+                    if v ~= LocalPlayer and Utility.Entity.IsAlive(v) then
+                        if TeamCheck and Utility.Entity.GetTeam(v) then continue end
+                        if WallCheck and v:IsA('Player') and not Utility.Entity.HasLineOfSight(v) then continue end
 
-			    	local Distance = (v.Character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position)
-		    		if Distance.Magnitude <= MaxDist then
-	    				local Pos, Visible = CurrentCamera:WorldToViewportPoint(v.Character.PrimaryPart.Position)
-			    		if Visible then
-				    		local Dist = (Vector2.new(Pos.X, Pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
-					    	if Dist <= FOV and Dist < MinDist then
-							    MinDist = Dist
-						    	Entity = v
-    						end
-	    				end
+			    	    local Character = v:IsA('Player') and v.Character or v
+			    	    local Distance = (Character.PrimaryPart.Position - LocalPlayer.Character.PrimaryPart.Position)
+		    		    if Distance.Magnitude <= MaxDist then
+		    		        local Vector, OnScreen = CurrentCamera:WorldToViewportPoint(Character.PrimaryPart.Position)
+			    		    if OnScreen then
+    				    	    local Dist = (Vector2.new(Vector.X, Vector.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
+	    				    	if Dist <= FOV and Dist < MinDist then
+		    					    MinDist = Dist
+			    			    	Entity = v
+	    	        	        end
+	    	    	        end
+	    	            end
 		    		end
     			end
 	    	end

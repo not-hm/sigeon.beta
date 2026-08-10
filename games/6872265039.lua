@@ -14,7 +14,7 @@ local Players = cloneref(game:GetService('Players'))
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 
-local Team
+local Team, AntiBot
 local Core = Library:Initialize()
 local Sections = {
 	Combat = Core:CreateSection(1, UDim2.new(0, 0, 2, -200)),
@@ -38,7 +38,7 @@ task.defer(function()
 					if Utility.Entity.GetPerspective() == 'Third' then return end
 					if Bedwars.Functions.UI.GetUI() then return end
 					if UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
-						local Entity = Utility.Entity.Get.Distance(Distances, 'Angle', Team.Enabled, true, 120)
+						local Entity = Utility.Entity.Get.Distance(Distances, 'Angle', AntiBot.Enabled, Team.Enabled, true, 120)
 						if Entity then
 							if ToolCheck and not Utility.Entity.Inventory.Character.Get() then return end
 							local FinalPos = Entity.Character.PrimaryPart.Position + (Entity.Character.PrimaryPart.AssemblyLinearVelocity * Prediction)
@@ -179,7 +179,7 @@ task.defer(function()
 					if Bedwars.Functions.UI.GetUI() then return end
 					local Tool = Bedwars.GetController('SwordController'):getHandItem().tool
 					if not Tool then return end
-					local Entity = 	Utility.Entity.Get.Distance(24, 'Angle', Team.Enabled, true, Direction)
+					local Entity = 	Utility.Entity.Get.Distance(24, 'Angle', AntiBot.Enabled, Team.Enabled, true, Direction)
 					if not Entity then return end
 					local Distance = Utility.Entity.GetMagnitude(Entity.Character.PrimaryPart.Position, LocalPlayer.Character.PrimaryPart.Position)
 					if Distance <= StartRotate then
@@ -260,7 +260,7 @@ task.defer(function()
 				Utility.Misc.Events.Add('Stepped', 'TriggerBot', nil, function()
 					if not Utility.Entity.IsAlive(LocalPlayer) then return end
 					if Bedwars.Functions.UI.GetUI() then return end
-					local Entity = Utility.Entity.Get.Distance(Distance, 'Angle', Team.Enabled, true, 120)
+					local Entity = Utility.Entity.Get.Distance(Distance, 'Angle', AntiBot.Enabled, Team.Enabled, true, 120)
 					if Entity and Mouse.Target and Mouse.Target:IsDescendantOf(Entity) then
 						local Tool = Bedwars.GetController('SwordController'):getHandItem()
 						if not Tool then return end
@@ -328,9 +328,51 @@ task.defer(function()
 	})
 end)
 
+local Bridger
+task.defer(function()
+    Bridger = Sections.World:CreateToggle({
+        Name = 'Bridger',
+        Callback = function(callback)
+            if callback then
+                Utility.Misc.Events.Add('Heartbeat', 'Bridger', nil, function()
+                    if not Utility.Entity.IsAlive(LocalPlayer) then return end
+                    local Humanoid = LocalPlayer.Character:FindFirstChildOfClass('Humanoid')
+                    if not Humanoid then return end
+                    local Direction = Vector3.new(LocalPlayer.Character.PrimaryPart.CFrame.LookVector.X, 0, LocalPlayer.Character.PrimaryPart.CFrame.LookVector.Z)
+                    if Direction.Magnitude <= 0.01 then return end
+                    Direction = Direction.Unit
+
+                    local BlockPlacer = Bedwars.GetController('BlockPlacementController'):getBlockPlacer()
+                    if not BlockPlacer then return end
+                    local BlockEngine = Bedwars.GetModule('block-engine.out').BlockEngine
+                    local PlacePosition = Bedwars.GetPos(LocalPlayer.Character.PrimaryPart.Position + Direction - Vector3.yAxis * (LocalPlayer.Character.PrimaryPart.Size.Y / 2 + Humanoid.HipHeight + 1.5))
+                    local BlockPosition = BlockEngine:getBlockPosition(PlacePosition - Direction)
+
+                    local BlockAt = BlockEngine:getStore():getBlockAt(BlockPosition)
+                    if not BlockAt then return end
+                    local FinalPos = BlockPosition + Direction
+                    BlockPlacer:placeBlock(FinalPos, {
+                        target = {
+                            blockInstance = BlockAt,
+                            blockRef = {
+                                blockPosition = BlockPosition
+                            },
+                            hitPosition = BlockPosition + Direction,
+                            hitNormal = Direction
+                        },
+                        placementPosition = FinalPos
+                    })
+                end)
+            else
+                Utility.Misc.Events.Remove('Heartbeat', 'Bridger')
+            end
+        end
+    })
+end)
+
 local Stealer
 task.defer(function()
-	local Stealing = false --// no idae if this would work prolly yes
+	local Stealing = false
 
 	Stealer = Sections.World:CreateToggle({
 		Name = 'Stealer',
@@ -348,7 +390,7 @@ task.defer(function()
 							if not Stealing then
 								Stealing = true
 								firesignal(v.Parent.MouseButton1Click)
-								task.wait(math.random(20, 40) / 100)
+								task.wait(math.random(10, 40) / 100)
 								Stealing = false
 							end
 						end
@@ -365,6 +407,14 @@ end)
 task.defer(function()
 	Team = Sections.Misc:CreateToggle({
 		Name = 'Team',
+		Callback = function(callback)
+		end
+	})
+end)
+
+task.defer(function()
+	AntiBot = Sections.Misc:CreateToggle({
+		Name = 'Anti Bot',
 		Callback = function(callback)
 		end
 	})
