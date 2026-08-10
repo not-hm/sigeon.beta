@@ -42,30 +42,32 @@ local function Collect(class, obj)
     return Collected[class]
 end
 
-local function Scan(folder)
+local function Scan(folder, parent)
+    parent = parent or ''
     for _, v in ipairs(folder:GetChildren()) do
+        local path = parent == '' and v.Name or parent .. '.' .. v.Name
         if v:IsA('ModuleScript') then
             local ok, res = pcall(require, v)
             if ok then
-                Collected[v.Name] = {
+                Collected[path] = Collected[path] or {
                     Result = res,
                     Functions = {},
                     Tables = {}
                 }
-                if type(res) == 'function' then
-                    Collected[v.Name].Result = res
-                elseif type(res) == 'table' then
+
+                Collected[path].Result = res
+                if type(res) == 'table' then
                     for _, x in pairs(res) do
                         if type(x) == 'table' then
-                            Collect(v.Name, x)
+                            Collect(path, x)
                         end
                     end
-                    Collect(v.Name, res)
+                    Collect(path, res)
                 end
-                Scan(v)
+                Scan(v, path)
             end
         elseif v:IsA('Folder') or v:IsA('Configuration') then
-            Scan(v)
+            Scan(v, path)
         end
     end
 end
@@ -107,21 +109,36 @@ Bedwars.GetController = function(name, debug) --// PlayerScripts
     end
 end
 Bedwars.GetModule = function(name) --// ReplicatedStorage
-    if Collected[name] then
-        local result = Collected[name].Result
-        if type(result) == 'function' then return result end
-        if type(result) == 'table' then
-            for i, v in pairs(Collected[name].Functions) do
-                if result[i] == nil then
-                    result[i] = v
+    local result = Collected[name]
+    if not result then
+        local found
+        for path, data in pairs(Collected) do
+            if path:sub(-#name - 1) == '.' .. name then
+                if found then
+                    warn('[bw_dumper]: unsure result for ' .. tostring(name))
+                    return nil
                 end
+                found = data
             end
-            return result
         end
-        return Collected[name].Functions
+        result = found
     end
-    warn('[bw_dumper]: unable to find ' .. tostring(name))
-    return nil
+    if not result then
+        warn('[bw_dumper]: unable to find ' .. tostring(name))
+        return nil
+    end
+    if type(result.Result) == 'function' then
+        return result.Result
+    end
+    if type(result.Result) == 'table' then
+        for i, v in pairs(result.Functions) do
+            if result.Result[i] == nil then
+                result.Result[i] = v
+            end
+        end
+        return result.Result
+    end
+    return result.Functions
 end
 
 Bedwars.GetUI = function()
@@ -131,6 +148,10 @@ Bedwars.GetUI = function()
 	if LocalPlayer.PlayerGui:FindFirstChild('TeamUpgradeApp') then return true end
     if LocalPlayer.PlayerGui:FindFirstChild('EnchantTable') then return true end
 	return false
+end
+
+Bedwars.GetPos = function(pos)
+    return Vector3.new(math.floor((pos.X / 3) + 0.5) * 3, math.floor((pos.Y / 3) + 0.5) * 3, math.floor((pos.Z / 3) + 0.5) * 3)
 end
 
 return Bedwars
