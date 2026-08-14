@@ -180,7 +180,7 @@ task.defer(function()
 						local Entity = Utility.Entity.Get.Distance(Distances, 'Angle', AntiBot.Enabled, (LocalPlayer.Team ~= Teams.Spectators), true, 120)
 						if Entity then
 							if ToolCheck and not BedFight.Functions.Inventory.Character.Find('sword') then return end
-							local FinalPos = Entity.Character.PrimaryPart.Position + (Entity.Character.PrimaryPart.AssemblyLinearVelocity * Prediction)
+							local FinalPos = Entity.PrimaryPart.Position + (Entity.PrimaryPart.AssemblyLinearVelocity * Prediction)
 							workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame:Lerp(CFrame.new(workspace.CurrentCamera.CFrame.Position, FinalPos), Strength)
 						end
 					end
@@ -311,15 +311,15 @@ task.defer(function()
 					if not Tool then BedFight.Functions.Tool.Reset() return end
 					local Entity = 	Utility.Entity.Get.Distance(18, 'Angle', AntiBot.Enabled, (LocalPlayer.Team ~= Teams.Spectators), true, Direction)
 					if not Entity then return end
-					local Distance = Utility.Entity.GetMagnitude(Entity.Character.PrimaryPart.Position, LocalPlayer.Character.PrimaryPart.Position)
+					local Distance = Utility.Entity.GetMagnitude(Entity.PrimaryPart.Position, LocalPlayer.Character.PrimaryPart.Position)
 					local Class = BedFight.Functions.Tool.GetClass(Tool)
 					if Class ~= 'Sword' then BedFight.Functions.Tool.Reset() return end
 					if Distance <= StartRotate then
-						local EntityPosition = Vector3.new(Entity.Character.PrimaryPart.Position.X, LocalPlayer.Character.PrimaryPart.Position.Y, Entity.Character.PrimaryPart.Position.Z)
+						local EntityPosition = Vector3.new(Entity.PrimaryPart.Position.X, LocalPlayer.Character.PrimaryPart.Position.Y, Entity.PrimaryPart.Position.Z)
 						local LookCFrame = CFrame.lookAt(LocalPlayer.Character.PrimaryPart.Position, EntityPosition)
 						if Utility.Entity.GetPerspective() then
 							if not Silent then return end
-							workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, Entity.Character.PrimaryPart.Position)
+						workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, Entity.PrimaryPart.Position)
 						end
 						LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position) * LookCFrame.Rotation
 					end
@@ -327,7 +327,7 @@ task.defer(function()
 						BedFight.Functions.Tool.Swing(Tool)
 						BedFight.Remotes.SwordHit:FireServer(
 							Tool.Name,
-							Entity.Character
+							Entity
 						)
 					end
 				end)
@@ -728,7 +728,7 @@ task.defer(function()
 					local Entity = Utility.Entity.Get.Mouse(1000, 180, AntiBot.Enabled, (LocalPlayer.Team ~= Teams.Spectators), true)
 					if Entity and self.TrajectoryData then
 						local MaxSpeed = data.Speed.Max
-						local Predicted = Utility.Entity.GetPrediction(Entity.Character.PrimaryPart, origin.Position, MaxSpeed)
+					local Predicted = Utility.Entity.GetPrediction(Entity.PrimaryPart, origin.Position, MaxSpeed)
 						local Direction = (Predicted - origin.Position).Unit
 						self.TrajectoryData.Velocity = Direction * MaxSpeed
 					end
