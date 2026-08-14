@@ -41,7 +41,7 @@ task.defer(function()
 						local Entity = Utility.Entity.Get.Distance(Distances, 'Angle', AntiBot.Enabled, Team.Enabled, true, 120)
 						if Entity then
 							if ToolCheck and not Utility.Entity.Inventory.Character.Get() then return end
-							local FinalPos = Entity.Character.PrimaryPart.Position + (Entity.Character.PrimaryPart.AssemblyLinearVelocity * Prediction)
+							local FinalPos = Entity.PrimaryPart.Position + (Entity.PrimaryPart.AssemblyLinearVelocity * Prediction)
 							workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame:Lerp(CFrame.new(workspace.CurrentCamera.CFrame.Position, FinalPos), Strength)
 						end
 					end
@@ -181,13 +181,13 @@ task.defer(function()
 					if not Tool then return end
 					local Entity = 	Utility.Entity.Get.Distance(24, 'Angle', AntiBot.Enabled, Team.Enabled, true, Direction)
 					if not Entity then return end
-					local Distance = Utility.Entity.GetMagnitude(Entity.Character.PrimaryPart.Position, LocalPlayer.Character.PrimaryPart.Position)
+					local Distance = Utility.Entity.GetMagnitude(Entity.PrimaryPart.Position, LocalPlayer.Character.PrimaryPart.Position)
 					if Distance <= StartRotate then
-						local EntityPosition = Vector3.new(Entity.Character.PrimaryPart.Position.X, LocalPlayer.Character.PrimaryPart.Position.Y, Entity.Character.PrimaryPart.Position.Z)
+                        local EntityPosition = Vector3.new(Entity.PrimaryPart.Position.X, LocalPlayer.Character.PrimaryPart.Position.Y, Entity.PrimaryPart.Position.Z)
 						local LookCFrame = CFrame.lookAt(LocalPlayer.Character.PrimaryPart.Position, EntityPosition)
 						if Utility.Entity.GetPerspective() == 'First' then
 							if not Silent then return end
-							workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, Entity.Character.PrimaryPart.Position)
+                        workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, Entity.PrimaryPart.Position)
 						end
 						LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position) * LookCFrame.Rotation
 					end
@@ -197,7 +197,7 @@ task.defer(function()
                     if Distance <= StartAttack then
                         local Cooldown = Bedwars.GetController('SwordController'):getRemainingSwingCooldown(Tool.Name)
                         if Cooldown > 0 then return end
-                        Bedwars.GetController:attackEntity(Entity, (Entity.Character.PrimaryPart.Position - workspace.CurrentCamera.CFrame.Position).Unit)
+                        Bedwars.GetController:attackEntity(Entity, (Entity.PrimaryPart.Position - workspace.CurrentCamera.CFrame.Position).Unit)
                     end
 				end)
 			else
@@ -432,3 +432,5 @@ task.defer(function()
 		end
 	})
 end)
+
+Core:CreateNotification('sigeon.pex', 'loaded!', 3)
