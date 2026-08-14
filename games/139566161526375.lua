@@ -136,7 +136,7 @@ task.defer(function()
 						local Entity = Utility.Entity.Get.Distance(Distances, 'Angle', AntiBot.Enabled, Team.Enabled, true, 120)
 						if Entity then
 							if ToolCheck and not Utility.Entity.Inventory.Character.Find('sword') then return end
-							local FinalPos = Entity.Character.PrimaryPart.Position + (Entity.Character.PrimaryPart.AssemblyLinearVelocity * Prediction)
+							local FinalPos = Entity.PrimaryPart.Position + (Entity.PrimaryPart.AssemblyLinearVelocity * Prediction)
 							workspace.CurrentCamera.CFrame = workspace.CurrentCamera.CFrame:Lerp(CFrame.new(workspace.CurrentCamera.CFrame.Position, FinalPos), Strength)
 						end
 					end
@@ -293,12 +293,12 @@ task.defer(function()
 						Crosshair.Position = FakeCrosshair.Position
 						return
 					end
-					local Distance = Utility.Entity.GetMagnitude(Entity.Character.PrimaryPart.Position, LocalPlayer.Character.PrimaryPart.Position)
+					local Distance = Utility.Entity.GetMagnitude(Entity.PrimaryPart.Position, LocalPlayer.Character.PrimaryPart.Position)
 					if Distance <= Distances then
 						Tool:Activate()
 						BridgeDuel.Blink.player_state.update_cps.fire(math.random(8, 12))
-						local Result = workspace:Raycast(LocalPlayer.Character.PrimaryPart.Position, (Entity.Character.PrimaryPart.Position + Vector3.new(0, 1.5, 0) - LocalPlayer.Character.PrimaryPart.Position).Unit * 1000, RayParams)
-						local ScreenPos, OnScreen = workspace.CurrentCamera:WorldToViewportPoint(Result and Result.Instance:IsDescendantOf(Entity.Character) and Result.Position or Entity.Character.PrimaryPart.Position)
+						local Result = workspace:Raycast(LocalPlayer.Character.PrimaryPart.Position, (Entity.PrimaryPart.Position + Vector3.new(0, 1.5, 0) - LocalPlayer.Character.PrimaryPart.Position).Unit * 1000, RayParams)
+						local ScreenPos, OnScreen = workspace.CurrentCamera:WorldToViewportPoint(Result and Result.Instance:IsDescendantOf(Entity) and Result.Position or Entity.PrimaryPart.Position)
 						if OnScreen and Crosshair and FakeCrosshair then
 							Crosshair.Position = UDim2.fromScale(ScreenPos.X / workspace.CurrentCamera.ViewportSize.X, ScreenPos.Y / workspace.CurrentCamera.ViewportSize.Y)
 						else
@@ -853,11 +853,11 @@ task.defer(function()
 						return
 					end
 					local Entity = Utility.Entity.Get.Mouse(1000, 180, AntiBot.Enabled, true, true)
-					if Entity and Entity.Character and Entity.Character.PrimaryPart then
+					if Entity and Entity.PrimaryPart then
 						local Origin = (workspace.CurrentCamera:ScreenPointToRay(workspace.CurrentCamera.ViewportSize.X / 2, FakeCrosshair.AbsolutePosition.Y)).Origin
 						local Charge = math.clamp(tick() - ChargeTime, 0, 0.7)
 						local Speed = Charge >= 0.7 and 160 or Charge >= 0.5 and 120 or Charge >= 0.1 and 80 or 60
-						local Predicted = Utility.Entity.GetPrediction(Entity.Character.PrimaryPart, Origin, Speed)
+						local Predicted = Utility.Entity.GetPrediction(Entity.PrimaryPart, Origin, Speed)
 						local Distance = (Predicted - Origin).Magnitude
 						local Time = Distance / Speed
 						local GravityComp = math.clamp(0.5 * workspace.Gravity * Time * Time, 0, 80)
