@@ -17,7 +17,7 @@ local Mouse = LocalPlayer:GetMouse()
 local Team, AntiBot
 local Core = Library:Initialize()
 local Sections = {
-	Combat = Core:CreateSection(1, UDim2.new(0, 0, 2, -200)),
+	Combat = Core:CreateSection(1, UDim2.new(0, 0, 2, -150)),
 	Movement = Core:CreateSection(2, UDim2.new(0, 0, 0, 0)),
 	Visual = Core:CreateSection(3, UDim2.new(0, 0, 0, 0)),
 	World = Core:CreateSection(4, UDim2.new(0, 0, 0, 0)),
@@ -36,7 +36,7 @@ task.defer(function()
 				Utility.Misc.Events.Add('Heartbeat', 'AimAssist', nil, function()
 					if not Utility.Entity.IsAlive(LocalPlayer) then return end
 					if Utility.Entity.GetPerspective() == 'Third' then return end
-					if Bedwars.Functions.UI.GetUI() then return end
+					if Bedwars.GetUI() then return end
 					if UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
 						local Entity = Utility.Entity.Get.Distance(Distances, 'Angle', AntiBot.Enabled, Team.Enabled, true, 120)
 						if Entity then
@@ -167,6 +167,7 @@ end)
 
 local SilentAura
 task.defer(function()
+    local Attacked, Swinged, AttackDelay, SwingDelay, Synced
 	local StartRotate, StartSwing, StartAttack
 	local Direction, Silent
 
@@ -174,9 +175,10 @@ task.defer(function()
 		Name = 'Silent Aura',
 		Callback = function(callback)
 			if callback then
+                Swinged, Attacked = false, false
 				Utility.Misc.Events.Add('Heartbeat', 'SilentAura', nil, function()
 					if not Utility.Entity.IsAlive(LocalPlayer) then return end
-					if Bedwars.Functions.UI.GetUI() then return end
+					if Bedwars.GetUI() then return end
 					local Tool = Bedwars.GetController('SwordController'):getHandItem().tool
 					if not Tool then return end
 					local Entity = 	Utility.Entity.Get.Distance(24, 'Angle', AntiBot.Enabled, Team.Enabled, true, Direction)
@@ -186,22 +188,40 @@ task.defer(function()
                         local EntityPosition = Vector3.new(Entity.PrimaryPart.Position.X, LocalPlayer.Character.PrimaryPart.Position.Y, Entity.PrimaryPart.Position.Z)
 						local LookCFrame = CFrame.lookAt(LocalPlayer.Character.PrimaryPart.Position, EntityPosition)
 						if Utility.Entity.GetPerspective() == 'First' then
-							if not Silent then return end
-                        workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, Entity.PrimaryPart.Position)
+							if not Silent then 
+                                workspace.CurrentCamera.CFrame = CFrame.new(workspace.CurrentCamera.CFrame.Position, Entity.PrimaryPart.Position)
+                            end
 						end
 						LocalPlayer.Character.PrimaryPart.CFrame = CFrame.new(LocalPlayer.Character.PrimaryPart.Position) * LookCFrame.Rotation
 					end
 					if Distance <= StartSwing then
-                        Bedwars.GetController('SwordController'):swingSwordAtMouse()
+                        if not Swinged then
+                            Swinged = true
+                            Bedwars.GetController('SwordController'):swingSwordAtMouse()
+                            if Synced then
+                                task.wait(AttackDelay)
+                            else
+                                task.wait(SwingDelay)
+                            end
+                            Swinged = false
+                        end
 					end
                     if Distance <= StartAttack then
                         local Cooldown = Bedwars.GetController('SwordController'):getRemainingSwingCooldown(Tool.Name)
                         if Cooldown > 0 then return end
-                        Bedwars.GetController:attackEntity(Entity, (Entity.PrimaryPart.Position - workspace.CurrentCamera.CFrame.Position).Unit)
+                        if not Attacked then
+                            Attacked = true
+                            local EntityUtil = Bedwars.GetModule('entity-util').EntityUtil:getEntity(Entity)
+                            if not EntityUtil then return end
+                            Bedwars.GetController('SwordController'):attackEntity(EntityUtil, (Entity.PrimaryPart.Position - workspace.CurrentCamera.CFrame.Position).Unit)
+                            task.wait(AttackDelay)
+                            Attacked = false
+                        end
                     end
 				end)
 			else
 				Utility.Misc.Events.Remove('Heartbeat', 'SilentAura')
+                Swinged, Attacked = false, false
 			end
 		end,
 	})
@@ -233,12 +253,36 @@ task.defer(function()
 		end,
 	})
     SilentAura:CreateSlider({
+		Name = 'Swing Delay',
+		Min = 0,
+		Max = 50,
+		Default = 5,
+		Callback = function(callback)
+			SwingDelay = callback / 100
+		end,
+	})
+    SilentAura:CreateSlider({
 		Name = 'Start Attack',
 		Min = 0,
 		Max = 24,
 		Default = 18,
 		Callback = function(callback)
 			StartAttack = callback
+		end,
+	})
+    SilentAura:CreateSlider({
+		Name = 'Attack Delay',
+		Min = 0,
+		Max = 50,
+		Default = 5,
+		Callback = function(callback)
+			AttackDelay = callback / 100
+		end,
+	})
+    SilentAura:CreateMiniToggle({
+		Name = 'Synchornize',
+		Callback = function(callback)
+			Synced = callback
 		end,
 	})
 	SilentAura:CreateMiniToggle({
@@ -251,24 +295,32 @@ end)
 
 local TriggerBot
 task.defer(function()
-	local Distance
+	local Distance, Delays
+    local Activated
 
 	TriggerBot = Sections.Combat:CreateToggle({
 		Name = 'Trigger Bot',
 		Callback = function(callback)
 			if callback then
+                Activated = false
 				Utility.Misc.Events.Add('Stepped', 'TriggerBot', nil, function()
 					if not Utility.Entity.IsAlive(LocalPlayer) then return end
-					if Bedwars.Functions.UI.GetUI() then return end
+					if Bedwars.GetUI() then return end
 					local Entity = Utility.Entity.Get.Distance(Distance, 'Angle', AntiBot.Enabled, Team.Enabled, true, 120)
 					if Entity and Mouse.Target and Mouse.Target:IsDescendantOf(Entity) then
 						local Tool = Bedwars.GetController('SwordController'):getHandItem()
 						if not Tool then return end
-						Bedwars.GetController('SwordController'):swingSwordAtMouse()
+						if not Activated then
+                            Activated = true
+                            Bedwars.GetController('SwordController'):swingSwordAtMouse()
+                            task.wait(Delays)
+                            Activated = false
+                        end
 					end
 				end)
 			else
 				Utility.Misc.Events.Remove('Stepped', 'TriggerBot')
+                Activated = false
 			end
 		end
 	})
@@ -280,6 +332,17 @@ task.defer(function()
 		Callback = function(callback)
 			if callback then
 				Distance = callback
+			end
+		end
+	})
+    TriggerBot:CreateSlider({
+		Name = 'Delay',
+		Min = 0,
+		Max = 50,
+		Default = 26,
+		Callback = function(callback)
+			if callback then
+				Delays = callback / 100
 			end
 		end
 	})
