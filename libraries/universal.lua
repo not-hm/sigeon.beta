@@ -245,7 +245,7 @@ Utility.Entity = {
 	    			    	end
     					    if Selected and Selected < MinDist then
     				    		MinDist = Selected
-	    		    			Entity = v
+							    Entity = Character
     	        	    	end
 	    	        	end
 	    	        end
@@ -271,7 +271,7 @@ Utility.Entity = {
     				    	    local Dist = (Vector2.new(Vector.X, Vector.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
 	    				    	if Dist <= FOV and Dist < MinDist then
 		    					    MinDist = Dist
-			    			    	Entity = v
+								    Entity = Character
 	    	        	        end
 	    	    	        end
 	    	            end
