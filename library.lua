@@ -5,9 +5,6 @@ local isfolder = isfolder or function(folder) end
 local writefile = writefile or function(file, data) end
 local isfile = isfile or function(file) end
 local readfile = readfile or function(file) end
-local gethui = gethui or function()
-    return game:GetService('CoreGui')
-end
 local cloneref = cloneref or function(obj)
 	return obj
 end
@@ -156,11 +153,7 @@ function Library:Initialize()
 	local ScreenGui = Instance.new('ScreenGui')
 	ScreenGui.Name = HttpService:GenerateGUID(false)
 	ScreenGui.ResetOnSpawn = false
-	if RunService:IsStudio() then
-		ScreenGui.Parent = LocalPlayer.PlayerGui
-	else
-		ScreenGui.Parent = game:GetService('CoreGui') --// temp set this to coregui cus i feel like delta gethui ass
-	end
+	ScreenGui.Parent = LocalPlayer.PlayerGui
 	
 	--
 
