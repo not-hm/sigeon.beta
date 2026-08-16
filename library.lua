@@ -5,6 +5,9 @@ local isfolder = isfolder or function(folder) end
 local writefile = writefile or function(file, data) end
 local isfile = isfile or function(file) end
 local readfile = readfile or function(file) end
+local gethui = gethui or function()
+    return game:GetService('CoreGui')
+end
 local cloneref = cloneref or function(obj)
 	return obj
 end
