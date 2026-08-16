@@ -1,13 +1,4 @@
 repeat task.wait() until game:IsLoaded() and workspace.CurrentCamera
-if game:GetService('UserInputService').TouchEnabled and not game:GetService('UserInputService').KeyboardEnabled and not game:GetService('UserInputService').MouseEnabled then --BYE BYE MOBILE USER AHHAHAHA
-	game:GetService('StarterGui'):SetCore('SendNotification', { 
-		Title = 'sigeon.pex',
-		Text = 'no mobile support yet',
-		Icon = 'rbxassetid://12435962893',
-		Duration = 3,
-	})
-end
-
 local Library = {}
 local makefolder = makefolder or function(folder) end
 local isfolder = isfolder or function(folder) end
