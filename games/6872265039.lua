@@ -176,7 +176,7 @@ task.defer(function()
 		Callback = function(callback)
 			if callback then
                 Swinged, Attacked = false, false
-				Utility.Misc.Events.Add('Heartbeat', 'SilentAura', nil, function()
+				Utility.Misc.Events.Add('RenderStepped', 'SilentAura', nil, function()
 					if not Utility.Entity.IsAlive(LocalPlayer) then return end
 					if Bedwars.GetUI() then return end
 					local Tool = Bedwars.GetController('SwordController'):getHandItem().tool
@@ -220,7 +220,7 @@ task.defer(function()
                     end
 				end)
 			else
-				Utility.Misc.Events.Remove('Heartbeat', 'SilentAura')
+				Utility.Misc.Events.Remove('RenderStepped', 'SilentAura')
                 Swinged, Attacked = false, false
 			end
 		end,
