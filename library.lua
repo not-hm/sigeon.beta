@@ -82,10 +82,10 @@ if isfile(CurrentGame) then
 end
 
 local function TotalY(obj)
+	if not obj then return UDim2.new(0, 200, 0, 100) end
 	local layout = obj:FindFirstChildOfClass('UIListLayout')
 	if not layout then return obj.Size end
 	return UDim2.new(obj.Size.X.Scale, obj.Size.X.Offset, 0, layout.AbsoluteContentSize.Y + 10)
-	--slider = 10
 end
 
 local function CreateStroke(obj, clr, thick, trans, mode)
