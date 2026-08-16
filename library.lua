@@ -159,7 +159,7 @@ function Library:Initialize()
 	if RunService:IsStudio() then
 		ScreenGui.Parent = LocalPlayer.PlayerGui
 	else
-		ScreenGui.Parent = gethui()
+		ScreenGui.Parent = game:GetService('CoreGui') --// temp set this to coregui cus i feel like delta gethui ass
 	end
 	
 	--
